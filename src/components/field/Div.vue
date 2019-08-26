@@ -5,6 +5,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldDiv',
   extends: base,
   props: {},
   data() {

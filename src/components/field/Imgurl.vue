@@ -16,6 +16,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldImgurl',
   extends: base,
   props: {},
   data() {

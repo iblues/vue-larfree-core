@@ -15,6 +15,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldTextarea',
   extends: base,
   props: {},
   data() {

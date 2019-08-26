@@ -13,17 +13,19 @@
   </span>
 </template>
 <script>
-import base from './base.js'
+  import base from './base.js'
 
-export default {
-  extends: base,
-  props: {},
-  data() {
-    return {
-      // searchModel: 'like',
+  export default {
+    name: 'LarFieldText',
+    extends: base,
+    props: {
+    },
+    data() {
+      return {
+        searchModel: 'like'
+      }
     }
   }
-}
 </script>
 <style>
 </style>

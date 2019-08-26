@@ -18,6 +18,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldButton',
   extends: base,
   props: {},
   data() {

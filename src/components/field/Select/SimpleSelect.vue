@@ -28,6 +28,7 @@
 import base from '../base.js'
 
 export default {
+  name: 'LarFieldSelectSimpleSelect',
   extends: base,
   props: {
     fieldOption: {// 如果不远程连表的话,这个代表备选数据
@@ -70,7 +71,7 @@ export default {
   methods: {
     initOption() {
       // 只有table模式不需要option
-      if (this.action == 'table') {
+      if (this.action === 'table') {
         return false
       }
       // 如果配置的option有数据,就解析结构

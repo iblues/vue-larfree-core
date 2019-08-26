@@ -1,15 +1,25 @@
 <script>
-import Vue from 'vue'
+
 export default {
   name: 'LarTableCeil',
   props: {
-    data: Object,
-    schema: Object,
+    // 整列的数据
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    schema: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     action: {
       type: String,
       default: 'table'
     }
-
   },
   data() {
     return {
@@ -21,7 +31,6 @@ export default {
   },
   watch: {
     data: function() {
-      //                this.$debug.log(this.formData,'datas');
       this.Ready()
     },
     schema: function() {
@@ -37,44 +46,44 @@ export default {
       this.temp = this.chooseComponent(this.schema)
       this.init()
     },
+    // 生成模板
     chooseComponent(schema) {
       var html = ''
       var bind = this.getBind(schema)
       var type = 'input'
-      switch (schema.type) {
-        default :
-          type = schema.type
-          if (!Vue.component(`lar-field-${type}`)) {
-            type = 'input'
-          }
-          html = `<span>
-${schema.type}
-                            <lar-field-${type}
-                                :data="data"
-                                ${bind}
-                                :action="action"
+      type = schema.type
 
-                                v-on = "$listeners"
-                                v-model="data[schema['key']]"
-                            >
-                            </lar-field-${type}>
-                            </span>
-                         `
-          break
+      const Vue = Window.larfree.vue
+      if (!Vue.component('LarField' + this.$larfree.ucfrist(type))) {
+        type = 'input'
       }
+      html = `<span>
+                <lar-field-${type}
+                    :data="data"
+                    ${bind}
+                    :action="action"
+
+                    v-on = "$listeners"
+                    v-model="data[schema['key']]"
+                >
+                </lar-field-${type}>
+              </span>
+             `
       return html
     },
 
     getBind(schema) {
       var bindData = ''
-      for (var key in schema) {
-        const ukey = key.substring(0, 1).toUpperCase() + key.substring(1)
+      for (const key in schema) {
+        const ukey = this.$larfree.ucfrist(this.$larfree.toHump(key))
         bindData += ` :field${ukey}="schema['${key}']"`
       }
       return bindData
     },
+
     // 渲染模板
     init() {
+      const Vue = Window.larfree.vue
       const result = Vue.compile(this.temp)
       this.template = result.render
     }

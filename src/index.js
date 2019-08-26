@@ -17,7 +17,7 @@ const lafree = {
     // 将field中的组件自动注册
     for (const key in modules) {
       if (modules[key].name) {
-        console.log(modules[key].name,'已注册')
+        console.log(modules[key].name, '已注册')
         Vue.component(modules[key].name, modules[key])
       }
     }
@@ -32,6 +32,10 @@ const lafree = {
     // 类似通过 this.$xxx 方式调用插件的 其实只是挂载到原型上而已
     // Vue.prototype.$xxx  // 最终可以在任何地方通过 this.$xxx 调用
     // 虽然没有明确规定用$开头  但是大家都默认遵守这个规定
+
+    // 解决vue示例不一致问题
+    Window.larfree = { 'vue': Vue }
+    console.log(Vue.component(`LarFieldInput`), 'ssss')
   }
 }
 export default lafree // 导出..

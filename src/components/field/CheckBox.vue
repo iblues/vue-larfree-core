@@ -30,6 +30,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldCheckbox',
   extends: base,
   props: {},
   data() {

@@ -102,6 +102,28 @@ export default {
       },
 
       /**
+       * 首字母大写
+       * @author Blues
+       * @param s
+       * @returns {string}
+       */
+      ucfrist: function(s) {
+        return s[0].toUpperCase() + s.slice(1)
+      },
+
+      /**
+       * 转驼峰
+       * @author Blues
+       * @param name
+       * @returns {*|void|string}
+       */
+      toHump: function(name) {
+        return name.replace(/\_(\w)/g, function(all, letter) {
+          return letter.toUpperCase()
+        })
+      },
+
+      /**
        *
        * @param name
        * @param w

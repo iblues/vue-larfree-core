@@ -35,6 +35,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldTime',
   extends: base,
   props: {},
   data() {

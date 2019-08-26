@@ -37,6 +37,7 @@
 import base from '../base.js'
 
 export default {
+  name: 'LarFieldSelectRemoteSelect',
   extends: base,
   props: {
     fieldLink: {// 连表的相关结构

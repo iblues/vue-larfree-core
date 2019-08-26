@@ -42,37 +42,34 @@ export default {
     },
     chooseComponent(schema) {
       // console.info('schema',schema);
-      var html = ''
-      var bind = this.getBind(schema)
-      var type = 'input'
+      let html = ''
+      const bind = this.getBind(schema)
+      let type = 'input'
 
-      switch (schema.type) {
-        // 可以对其他的组建 做特殊化处理
-        default :
-          type = schema.type
-          if (!Vue.component(`lar-field-${type}`)) {
-            type = 'input'
-          }
-          html = `<lar-field-${type}
-                            ${bind}
-                            :data="data"
-                            :action="action"
-                            :value="value"
-                            v-on = "$listeners">
-                        </lar-field-${type}>`
-          break
+      type = schema.type
+      const Vue = Window.larfree.vue
+      if (!Vue.component('LarField' + this.$larfree.ucfrist(type))) {
+        type = 'input'
       }
+      html = `<lar-field-${type}
+                    ${bind}
+                    :data="data"
+                    :action="action"
+                    :value="value"
+                    v-on = "$listeners">
+                </lar-field-${type}>`
+
       // console.log(schema, this.data, this.action, this.value, html);
       return html
     },
     // 解析需要额外绑定的参数
     getBind(schema) {
       var bindData = ''
-      for (var key in schema) {
-        const ukey = key.substring(0, 1).toUpperCase() + key.substring(1)
+      for (const key in schema) {
+        const ukey = this.$larfree.ucfrist(this.$larfree.toHump(key))
         bindData += ` :field${ukey}="schema['${key}']"`
       }
-      for (var key in this.$attrs) {
+      for (const key in this.$attrs) {
         bindData += `  :${key}="$attrs['${key}']"`
       }
       // console.info('bindData',bindData);
@@ -80,6 +77,7 @@ export default {
     },
     // 渲染模板
     init() {
+      const Vue = Window.larfree.vue
       const result = Vue.compile(this.temp)
       this.template = result.render
     }

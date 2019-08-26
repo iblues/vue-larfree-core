@@ -72,6 +72,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldImage',
   extends: base,
   props: {
     fieldMulti: {

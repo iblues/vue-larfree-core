@@ -37,6 +37,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldDate',
   extends: base,
   props: {},
   data() {

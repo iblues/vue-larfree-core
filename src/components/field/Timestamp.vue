@@ -38,6 +38,7 @@
 import base from './base.js'
 
 export default {
+  name: 'LarFieldTimestamp',
   filters: {
     datereg(val) {
       if (val) {

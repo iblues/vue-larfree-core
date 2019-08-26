@@ -16,7 +16,6 @@
   </span>
 </template>
 <script>
-import Vue from 'vue'
 //    Vue.component('lar-field-select-remote-multi-select', function (resolve) {
 //        require(['./Select/RemoteMultiSelect'], resolve)
 //    });
@@ -27,20 +26,15 @@ import Vue from 'vue'
 //        require(['./Select/SimpleSelect'], resolve)
 //    });
 
-Vue.component('lar-field-select-remote-multi-select',
-  require('./Select/RemoteMultiSelect').default
-)
-Vue.component('lar-field-select-remote-select',
-  require('./Select/RemoteSelect').default
-)
-Vue.component('lar-field-select-simple-select',
-  require('./Select/SimpleSelect').default
-)
+import RemoteMultiSelect from './Select/SimpleSelect'
+import RemoteSelect from './Select/RemoteSelect'
+import SimpleSelect from './Select/SimpleSelect'
 
 import base from './base.js'
 
 export default {
   name: 'LarFieldSelect',
+  components: { RemoteMultiSelect, RemoteSelect, SimpleSelect },
   extends: base,
   props: {
     fieldLink: {
