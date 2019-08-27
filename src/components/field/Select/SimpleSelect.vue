@@ -32,9 +32,9 @@ export default {
   extends: base,
   props: {
     fieldOption: {// 如果不远程连表的话,这个代表备选数据
-      type: Array,
+      type: [Array,Object],
       default: function() {
-        return []
+        return {}
       }
     },
     fieldKey: {
