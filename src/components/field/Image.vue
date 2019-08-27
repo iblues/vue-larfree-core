@@ -76,9 +76,13 @@ export default {
   extends: base,
   props: {
     fieldMulti: {
+      type: [Number, String, Boolean],
       default: false
     }, // 是否多选
-    value: {} // 单选应该是字符串,多选是数组
+    value: {
+      type: [String, Array],
+      default: ''
+    } // 单选应该是字符串,多选是数组
   },
   data() {
     return {
@@ -147,7 +151,8 @@ export default {
         }
       }
     },
-    handleError(err, file, fileList) {
+    // err, file, fileList 3个参数
+    handleError() {
       this.$message.error('上传错误')
     },
     handleChange(file, fileList) {

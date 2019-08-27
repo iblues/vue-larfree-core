@@ -1,6 +1,7 @@
 
 <script>
 export default {
+  name: 'LarFormCeil',
   inheritAttrs: false,
   props: {
     action: {
@@ -8,8 +9,16 @@ export default {
       default: 'edit'
     },
 
-    data: Object,
-    value: {}
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    value: {
+      type: [Object, Array, Number, String, Boolean],
+      default: ''
+    }
 
   },
   data() {

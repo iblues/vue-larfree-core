@@ -50,14 +50,20 @@ export default {
       type: String,
       default: ''
     },
-    fieldMulti: [Boolean, String, Number], // 是否多选
+    fieldMulti: {
+      type: [Boolean, String, Number], // 是否多选
+      default: false
+    },
     fieldOption: {// 如果不远程连表的话,这个代表备选数据
       type: Array,
       default: function() {
         return []
       }
     },
-    fieldKey: String
+    fieldKey: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -76,6 +82,8 @@ export default {
       if (this.data[optionName]) {
         const value = this.data[optionName]
         if (this.fieldLink.select) { return value[this.fieldLink.select[1]] } else { return value }
+      } else {
+        return ''
       }
     }
   },

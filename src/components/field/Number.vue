@@ -10,7 +10,7 @@
     </template>
     <template v-if="action == 'search' ">
 
-      <span class="number_range el-input__inner">
+      <span class="lar-number_range el-input__inner">
         <el-input
           v-model="min"
           :placeholder="fieldName + '最小值'"
@@ -69,20 +69,25 @@ export default {
 }
 </script>
 <style>
-    .el-input__inner .el-input__inner{
-            height: 30px !important;
-    }
-    .number_range {
+
+    .lar-number_range {
         border: 1px solid #dcdfe6;
-        /*height: 32px;*/
+        height: 36px;
         display: inline-block;
+        overflow: hidden;
+        margin-bottom: -4px;
     }
 
-    .number_range .el-input {
+    .lar-number_range .el-input {
         width: 45%;
     }
 
-    .number_range input {
+    .lar-number_range .el-input__inner{
+      position: relative;
+      top:-2px;
+    }
+
+    .lar-number_range input {
         position: relative;
         top: 0px;
         height: 30px !important;

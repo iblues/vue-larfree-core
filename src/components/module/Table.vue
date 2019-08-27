@@ -4,7 +4,6 @@
     <!--数据表单-->
     <el-table
       :data="data"
-      :border="true"
       highlight-current-row
       :show-overflow-tooltip="true"
       :header-cell-style="tableHeaderColor"
@@ -19,7 +18,7 @@
         <!--</template>-->
       </el-table-column>
       <el-table-column
-        v-if="schemas.show&&schemas.show.is_show.default === '1'"
+        v-if="schemas.show"
         :sort-change="handleSort"
         type="selection"
         align="center"
@@ -33,7 +32,7 @@
         sortable
         :prop="schema.key"
         :label="schema.name"
-        :min-width="schema.width "
+        :width="schema.width"
       >
         <template slot-scope="scope">
           <lar-table-ceil
@@ -60,19 +59,7 @@
         <!--</template>-->
       </el-table-column>
     </el-table>
-    <div v-if="pageInfo.path" class="block" style="text-align: right;padding-bottom: 20px">
-      <br>
-      <el-pagination
-        background
-        :current-page="pageInfo.current_page"
-        :page-sizes="[10, 20, 40, 60, 80, 100, 200]"
-        :page-size="pageInfo.per_page"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pageInfo.total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
+
   </div>
 
 </template>
@@ -252,13 +239,7 @@ export default {
       this.multipleSelection = val
       this.$emit('SelectionChange', val)
     },
-    handleSizeChange(val) {
-      this.pageInfo.per_page = val
-    },
-    handleCurrentChange(val) {
-      this.zeroing = false
-      this.pageInfo.current_page = val
-    },
+
     handleSort(column) {
       let sort = 'desc'
       if (column.order === 'ascending') { sort = 'asc' }
@@ -393,85 +374,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .lar-table  .el-range-editor.el-input__inner {
-        padding: 0px 10px !important;
-    }
-  .lar-table  .el-input__inner {
-        height: 32px !important;
-        line-height: 32px !important;
-    }
-  .lar-table   .el-date-editor .el-range-input,
-  .lar-table  .el-date-editor .el-range-separator {
-      height: auto !important;
-  }
-
-  .el-table {
-      font-size: 12px !important;
-  }
-
-  .el-table--border, .el-table--group {
-      border: none;
-  }
-
-  .el-table--border::after, .el-table--group::after {
-      width: 0px !important;
-  }
-
-  .lar-table .el-table--border td, .lar-table .el-table--border th {
-      border-right: none;
-  }
-
-  /*.action-th .cell {*/
-  /*padding: 0;*/
-  /*}*/
-  .add_button span {
-      font-size: 24px;
-      background: #ec407a;
-      color: white;
-      line-height: 46px;
-      width: 44px;
-      height: 44px;
-      top: -12px;
-      position: absolute;
-      text-align: center;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 0 7px #aaa;
-      z-index: 99;
-      margin-left: 10px;
-      transform: rotate(0deg);
-      transition: box-shadow, transform 2s;
-
-  }
-
-  .add_button span:hover {
-      transform: rotate(360deg);
-      box-shadow: 0 0 10px #888888;
-      transition: box-shadow, transform 2s;
-  }
-
-  .el-table .cell, .el-table th div {
-      overflow: initial !important;
-  }
-
-  .el-button.is-circle {
-      padding: 6px;
-  }
-
-  .table--button-group div {
-      font-size: 10px;
-  }
-
-  @media screen and (max-width: 1400px) {
-      .table--button-group .el-button {
-          font-size: 14px;
-          padding: 0px 4px;
-
-      }
-
-      .table--button-group button {
-          font-size: 24px !important;
-      }
-  }
-</style>

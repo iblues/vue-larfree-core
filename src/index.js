@@ -2,7 +2,8 @@
 import $larfree from './plugin/larFree.js'
 import $debug from './plugin/debug.js'
 import larTable from './components/module/Table'
-
+import larSearchBox from './components/module/SearchBox'
+import larFromCeil from './components/form/Ceil'
 const modulesFiles = require.context('./components/field', true, /\.vue$/)
 
 const modules = modulesFiles.keys().reduce((modules, modulePath) => {
@@ -23,6 +24,8 @@ const lafree = {
     }
 
     Vue.component(larTable.name, larTable)
+    Vue.component(larSearchBox.name, larSearchBox)
+    Vue.component(larFromCeil.name, larFromCeil)
 
     Vue.use($larfree)
     Vue.use($debug)

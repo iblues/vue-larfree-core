@@ -44,7 +44,7 @@ img {
       <!--{{button}}-->
       <!--</el-button>-->
       <ul style="list-style: none;padding:0">
-        <li v-for="button in show" class="button">
+        <li v-for="button in show" :key="button" class="button">
           <el-tooltip
             class="item"
             effect="dark"
@@ -121,11 +121,15 @@ export default {
     fieldLink: {
       // 连表的相关结构
       type: Object,
-      require: true
+      require: true,
+      default: function() {
+        return {}
+      }
     },
     fieldName: {
       // 连表的相关结构
-      type: String
+      type: String,
+      default: ''
     },
     fieldOption: {
       // 如果不远程连表的话,这个代表备选数据
@@ -134,7 +138,10 @@ export default {
         return []
       }
     },
-    fieldKey: String
+    fieldKey: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
