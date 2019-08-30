@@ -11,10 +11,10 @@
     </template>
     <template v-if="action == 'table'">
       <!--<i class="el-icon-time"></i>-->
-      <div v-if="value">
+      <div v-if="value" style="line-height: 18px;">
         <i class="el-icon-date" /><span>{{ value.substring(2, 10) }}</span>
       </div>
-      <div v-if="value">
+      <div v-if="value" style="line-height: 18px;">
         <i class="el-icon-time" /><span>{{ value.substring(11) }}</span>
       </div>
     </template>
@@ -33,7 +33,7 @@
       />
     </template>
   </div>
-</template>ß
+</template>
 <script>
 import base from './base.js'
 
@@ -71,12 +71,18 @@ export default {
   },
   computed: {
     pickerOptions() {
+      return this.pickerOption()
+    }
+  },
+
+  methods: {
+    pickerOption() {
       /*
-      this.schema.range = ["-1d", ""]; //从一天前开始
-      this.schema.range = ["2d", ""]; //从两天后开始
-      this.schema.range = ["now", "4w"]; //从现在到4周(28天)后那天
-      this.schema.range = ["3M", "now"]; //从3个月(90天)前那天到现在
-      */
+          this.schema.range = ["-1d", ""]; //从一天前开始
+          this.schema.range = ["2d", ""]; //从两天后开始
+          this.schema.range = ["now", "4w"]; //从现在到4周(28天)后那天
+          this.schema.range = ["3M", "now"]; //从3个月(90天)前那天到现在
+          */
       if (this.schema.range && this.schema.range.length === 2) {
         const range = this.schema.range
         const todayZeroTime = new Date(new Date().toLocaleDateString()).getTime() // 当天00:00:00
@@ -131,9 +137,7 @@ export default {
         ]
       }
       return this.options
-    }
-  },
-  methods: {
+    },
     formatCompute(format, time) {
       const matchs = format.match(/^(-)?(\d)+(ms|[smhdwMy])$/)
       let dValue = parseInt(matchs[2]) // matchs[2]:差值

@@ -1,66 +1,63 @@
 <template>
-  <div class="lar-table">
-
-    <!--数据表单-->
-    <el-table
-      :data="data"
-      highlight-current-row
-      :show-overflow-tooltip="true"
-      :header-cell-style="tableHeaderColor"
-      style="width: 100%;"
-      @selection-change="handleSelectionChange"
-      @sort-change="handleSort"
+  <!--数据表单-->
+  <el-table
+    class="lar-table"
+    :data="data"
+    highlight-current-row
+    :show-overflow-tooltip="true"
+    :header-cell-style="tableHeaderColor"
+    style="width: 100%;"
+    @selection-change="handleSelectionChange"
+    @sort-change="handleSort"
+  >
+    <!--id的列-->
+    <el-table-column v-if="schemas.show&&schemas.show.is_drop.default === '1'" type="expand" width="60">
+      <!--<template slot-scope="props">-->
+      <!--<slot :name="schemas.show.is_drop.action" :data="{data:props}" />-->
+      <!--</template>-->
+    </el-table-column>
+    <el-table-column
+      v-if="schemas.show"
+      :sort-change="handleSort"
+      type="selection"
+      align="center"
+      width="36"
+    />
+    <!--数据的列-->
+    <!--sortable-->
+    <el-table-column
+      v-for="schema in schemas.component_fields"
+      :key="schema.key"
+      sortable
+      :prop="schema.key"
+      :label="schema.name"
+      :width="schema.width"
     >
-      <!--id的列-->
-      <el-table-column v-if="schemas.show&&schemas.show.is_drop.default === '1'" type="expand" width="60">
-        <!--<template slot-scope="props">-->
-        <!--<slot :name="schemas.show.is_drop.action" :data="{data:props}" />-->
-        <!--</template>-->
-      </el-table-column>
-      <el-table-column
-        v-if="schemas.show"
-        :sort-change="handleSort"
-        type="selection"
-        align="center"
-        width="36"
-      />
-      <!--数据的列-->
-      <!--sortable-->
-      <el-table-column
-        v-for="schema in schemas.component_fields"
-        :key="schema.key"
-        sortable
-        :prop="schema.key"
-        :label="schema.name"
-        :width="schema.width"
-      >
-        <template slot-scope="scope">
-          <lar-table-ceil
-            v-if="schema"
-            :data="scope.row"
-            :schema="schema"
-            :action="'table'"
-            @quick-change="quickChange($event,schema.key,scope.row)"
-          />
-        </template>
-      </el-table-column>
-      <!--操作的列-->
-      <el-table-column
-        v-if="hasAction"
-        class-name="action-th"
-        header-align="center"
-        label="管理"
-        fixed="right"
-        width="100"
-      >
-        <!--:width="Object.keys(schemas.config.action).length*76"-->
-        <!--<template slot-scope="scope">-->
-        <!--<TableAction :data="scope" :schemas="schemas. @handle="handleAction" />-->
-        <!--</template>-->
-      </el-table-column>
-    </el-table>
-
-  </div>
+      <template slot-scope="scope">
+        <lar-table-ceil
+          v-if="schema"
+          :data="scope.row"
+          :schema="schema"
+          :action="'table'"
+          @quick-change="quickChange($event,schema.key,scope.row)"
+        />
+      </template>
+    </el-table-column>
+    <!--操作的列-->
+    <el-table-column
+      v-if="hasAction"
+      class-name="action-th"
+      header-align="center"
+      label="管理"
+      fixed="right"
+      width="100"
+    >
+      <!--:width="Object.keys(schemas.config.action).length*76"-->
+      <!--<template slot-scope="scope">-->
+      <!--<TableAction :data="scope" :schemas="schemas. @handle="handleAction" />-->
+      <!--</template>-->
+    </el-table-column>
+  </el-table>
 
 </template>
 <script>

@@ -42,18 +42,18 @@
             <el-col class="form-group form-input">
               <div>
                 <slot name="search" />
-
-                <el-button type="primary" class="reset-btn" @click="search()">搜 索</el-button>
-                <el-button type="default" class="reset-btn" @click="clearSearch()">重 置</el-button>
+                <el-button type="primary" class="reset-btn" icon="el-icon-search" size="medium" @click="search()">搜索</el-button>
+                <el-button type="default" class="reset-btn" size="medium" @click="clearSearch()">重置</el-button>
                 <el-button
                   v-show="advSchemas.length!==0"
                   type="default"
-
+                  size="medium"
                   class="shai-btn"
                   @click="showSearch = !showSearch"
                 >
                   高级筛选<i class="el-icon-arrow-down" style="position: relative;left: 6px" />
                 </el-button>
+                <slot name="btn" />
               </div>
             </el-col>
 
