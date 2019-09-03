@@ -1,19 +1,30 @@
-<style lang="less" scoped>
-</style>
-
 <template>
-  <component :is="currentComponent" :data="data" :schemas="schemas" @handle="handleAction" />
+  <div style="text-align: center">
+    <span v-for="action in schemas.config.action" :key="action.name">
+      <el-tooltip
+        class="item"
+        effect="dark"
+        :content="action.html"
+        placement="top"
+      >
+        <el-button
+          :type="action.type"
+          circle
+          size="mini"
+          style="margin-right: 2px"
+          @click="handleAction(data.$index, data.row, action)"
+        >
+          {{ action.html.substring(0, 1) }}
+        </el-button>
+      </el-tooltip>
+    </span>
+  </div>
 </template>
 
 <script>
-import ActionDefault from '@/components/table/actions/default.vue'
-import ActionEnterpriseCertification from '@/components/table/actions/enterprise-certification.vue'
 
 export default {
-  components: {
-    ActionDefault,
-    ActionEnterpriseCertification
-  },
+  name: 'LarTableAction',
   props: {
     data: Object,
     schemas: Object
@@ -22,21 +33,14 @@ export default {
     return {}
   },
   computed: {
-    currentComponent() {
-      switch (this.schemas.config['action-type']) {
-        case 'enterprise-certification':
-          return 'ActionEnterpriseCertification'
-        default:
-          return 'ActionDefault'
-      }
-    }
+
   },
   created() {
     // debugger;
   },
   methods: {
-    handleAction(args) {
-      this.$emit('handle', args)
+    handleAction(index, data, action) {
+      this.$emit('handle', { index, data, action })
     }
   }
 }

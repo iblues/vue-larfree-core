@@ -48,14 +48,15 @@
       v-if="hasAction"
       class-name="action-th"
       header-align="center"
-      label="管理"
+      label="操作"
       fixed="right"
       width="100"
     >
-      <!--:width="Object.keys(schemas.config.action).length*76"-->
-      <!--<template slot-scope="scope">-->
-      <!--<TableAction :data="scope" :schemas="schemas. @handle="handleAction" />-->
-      <!--</template>-->
+      <template slot-scope="scope">
+        <slot name="defaultActions">
+          <larTableAction :data="scope" :schemas="schemas" @handle="handleAction" />
+        </slot>
+      </template>
     </el-table-column>
   </el-table>
 
@@ -63,10 +64,11 @@
 <script>
 import Vue from 'vue'
 import larTableCeil from '../table/Ceil'
+import larTableAction from '../table/Action'
 
 export default {
   name: 'LarTable',
-  components: { larTableCeil },
+  components: { larTableCeil, larTableAction },
   props: {
     model: {
       type: String,
@@ -215,7 +217,7 @@ export default {
     // },
     // 处理下action的触发时间
     handleAction({ index, data, action }) {
-      // this.$debug.log(action);
+      this.$debug.log(action)
       if (action.url) {
         const url = this.$larfree.replaceParm(action.url, data)
         this.$debug.log(url, 'actionUrl', this)

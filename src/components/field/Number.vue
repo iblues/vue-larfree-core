@@ -72,7 +72,7 @@ export default {
 
     .lar-number_range {
         border: 1px solid #dcdfe6;
-        height: 40px;
+        height: 36px;
         display: inline-block;
         overflow: hidden;
         margin-bottom: -4px;
