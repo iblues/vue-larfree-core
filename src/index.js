@@ -2,10 +2,14 @@
 import $larfree from './plugin/larFree.js'
 import $debug from './plugin/debug.js'
 import larTable from './components/module/Table'
+import larFrom from './components/module/Form'
+import larDetail from './components/module/Detail'
 import larSearchBox from './components/module/SearchBox'
 import larFromCeil from './components/form/Ceil'
-const modulesFiles = require.context('./components/field', true, /\.vue$/)
+// import larDialog from './components/module/Dialog'
 
+// 批量读取field组件
+const modulesFiles = require.context('./components/field', true, /\.vue$/)
 const modules = modulesFiles.keys().reduce((modules, modulePath) => {
   const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
   const value = modulesFiles(modulePath)
@@ -24,8 +28,11 @@ const lafree = {
     }
 
     Vue.component(larTable.name, larTable)
+    Vue.component(larFrom.name, larFrom)
+    Vue.component(larDetail.name, larDetail)
     Vue.component(larSearchBox.name, larSearchBox)
     Vue.component(larFromCeil.name, larFromCeil)
+    // Vue.component(larDialog.name, larDialog)
 
     Vue.use($larfree)
     Vue.use($debug)

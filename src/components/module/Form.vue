@@ -53,13 +53,14 @@
     </template>
 
     <div style="text-align: center;margin-top: 20px">
-      <el-button type="primary" @click="onSubmit">立即创建</el-button>
+      <el-button type="primary" @click="onSubmit">确定</el-button>
       <el-button @click="cancel">取消</el-button>
     </div>
   </el-form>
 </template>
 <script>
 export default {
+  name: 'LarForm',
   props: {
     id: String,
     model: {

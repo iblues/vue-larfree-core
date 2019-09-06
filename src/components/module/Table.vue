@@ -46,11 +46,11 @@
     <!--操作的列-->
     <el-table-column
       v-if="hasAction"
-      class-name="action-th"
+      class-name="action-th"≤
       header-align="center"
       label="操作"
       fixed="right"
-      width="100"
+      width="80"
     >
       <template slot-scope="scope">
         <slot name="defaultActions">

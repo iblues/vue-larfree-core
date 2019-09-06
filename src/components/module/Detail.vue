@@ -1,6 +1,7 @@
 
 <template>
   <el-form
+    v-if="Schemas"
     ref="form"
     v-loading="loading"
     class="form"
@@ -10,7 +11,6 @@
   >
     <template
       v-for="(schema, index) in Schemas.component_fields"
-      v-if="Schemas"
     >
       <span :key="index" class="row-item-span">
         <!--{{schema | result('key',123)}}-->
@@ -70,6 +70,7 @@
 </template>
 <script>
 export default {
+  name: 'LarDetail',
   props: {
     id: String,
     model: {
