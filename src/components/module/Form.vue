@@ -55,12 +55,12 @@
 
     </template>
 
-    <solt name="bottom">
+    <slot name="bottom">
       <div style="text-align: center;margin-top: 20px">
         <el-button type="primary" @click="onSubmit">确定</el-button>
         <el-button @click="cancel">取消</el-button>
       </div>
-    </solt>
+    </slot>
   </el-form>
 </template>
 <script>
