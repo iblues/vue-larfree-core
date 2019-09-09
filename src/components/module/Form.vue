@@ -1,4 +1,7 @@
-
+/**
+* 渲染表单. 逻辑部分在父组件处理. 此部分只处理渲染.
+* @author Blues
+*/
 <template>
   <el-form v-if="schemas" ref="form" v-loading="loading" class="lar-form" label-position="top" style="padding: 5px 10px;" label-width="150px">
 
@@ -52,10 +55,12 @@
 
     </template>
 
-    <div style="text-align: center;margin-top: 20px">
-      <el-button type="primary" @click="onSubmit">确定</el-button>
-      <el-button @click="cancel">取消</el-button>
-    </div>
+    <solt name="bottom">
+      <div style="text-align: center;margin-top: 20px">
+        <el-button type="primary" @click="onSubmit">确定</el-button>
+        <el-button @click="cancel">取消</el-button>
+      </div>
+    </solt>
   </el-form>
 </template>
 <script>
@@ -81,10 +86,10 @@ export default {
         return {}
       }
     },
-    data: {
-      type: Array,
+    value: {
+      type: Object,
       default: function() {
-        return []
+        return {}
       }
     }
   },
@@ -113,6 +118,13 @@ export default {
     },
     mode: function() {
       if (this.mode === 'add') { this.$emit('title', '添加') } else { this.$emit('title', '编辑') }
+    },
+    value: function() {
+      this.updateData()
+    },
+
+    formData: function(newValue) {
+      this.$emit('update', newValue)
     }
   },
 
@@ -123,70 +135,12 @@ export default {
   },
 
   methods: {
-    updateData(data) {
-      this.formData = data
-    },
-
-    getData() {
-      // 根据配置 初始化添加的数据结构
-      if (this.mode === 'add') {
-        const schemas = {}
-        for (var key in this.schemas['fields']) {
-          const name = this.schemas['fields'][key]['key']
-          schemas[name] = ''
-        }
-        this.formData = schemas
-        this.loading = false
-      } else {
-        this.$http.get(this.readApi)
-          .then((response) => {
-            this.loading = false
-            if (response.data.status === 1) {
-              this.$emit('loaded')
-              this.$debug.log(response.data.data, this.api, this)
-              this.formData = response.data.data
-            } else {
-              this.$message.error('数据错误')
-            }
-          })
-          .catch((error) => {
-            this.loading = false
-            this.$message.error(error.response.data.msg)
-            //                        console.log(error);
-          })
-      }
+    updateData() {
+      this.formData = this.value
     },
 
     onSubmit() {
-      this.$emit('loading')
-      this.loading = true
-      this.$debug.log(this.formData, 'submit', this)
-      let http
-      if (this.mode === 'add') {
-        http = this.$http.post(this.api, this.formData)
-      } else {
-        http = this.$http.put(this.api, this.formData)
-      }
-
-      this.$http.then((response) => {
-        this.loading = false
-        if (response.data.status === 1) {
-          this.$message.success(response.data.msg)
-          this.formData = response.data.data
-          this.$store.commit('refreshEvents', this.model)
-          this.$store.commit('refreshDialog')
-          this.$emit('back')
-        } else {
-          this.errors = response.data.data
-          this.$message.error(response.data.msg)
-          this.$larfree.goToTop()
-        }
-      }).catch((error) => {
-        this.loading = false
-        this.$message.error(error.response.data.msg)
-        return true
-      })
-      //            this.$debug.log(this.formData,'test');
+      this.$emit('submit', this.formData)
     },
 
     cancel() {
