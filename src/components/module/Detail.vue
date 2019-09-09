@@ -4,7 +4,7 @@
     v-if="Schemas"
     ref="form"
     v-loading="loading"
-    class="form"
+    class="lar-detail"
     label-position="top"
     style="padding: 5px 10px;"
     label-width="150px"
@@ -35,10 +35,10 @@
           <div class="row-title">{{ schema.name }}</div>
           <!--<hr style="margin-bottom: 10px;"/>-->
           <el-row :gutter="20" style="margin: 0">
-            <template v-for="(children_schema, index) in schema.group_children">
-              <el-col :key="index" :span="12">
+            <template v-for="(children_schema, index_group) in schema.group_children">
+              <el-col :key="index_group" :span="12">
                 <el-form-item style="top:-5px;position:relative">
-                  <strong
+                  <span
                     class="help-block m-b-none"
                     v-html="Schemas['fields'][children_schema.key].name"
                   />
@@ -72,10 +72,30 @@
 export default {
   name: 'LarDetail',
   props: {
-    id: String,
+    id: {
+      type: [Number, String],
+      default: 0
+    },
     model: {
       type: String,
       required: true
+    },
+    action: {
+      type: String,
+      default: 'edit'
+    },
+    // 结构蓝图
+    schemas: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    data: {
+      type: Array,
+      default: function() {
+        return []
+      }
     }
   },
   data() {
@@ -188,15 +208,15 @@ export default {
 }
 </style>
 <style>
-.el-form--label-top .el-form-item__label {
+.lar-detail .el-form--label-top .el-form-item__label {
   padding: 0 !important;
   margin-bottom: 0px;
 }
-.row-title {
+.lar-detail .row-title {
   /*margin: 10px 10px 0 10px;*/
   font-size: 14px;
   padding: 10px;
-  background-color: #eee;
+  background-color: rgba(255,255,255,.2);
   margin-top: 15px;
 }
 /*.el-form-item__content{*/

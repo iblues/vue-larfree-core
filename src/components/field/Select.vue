@@ -26,7 +26,7 @@
 //        require(['./Select/SimpleSelect'], resolve)
 //    });
 
-import RemoteMultiSelect from './Select/SimpleSelect'
+import RemoteMultiSelect from './Select/RemoteMultiSelect'
 import RemoteSelect from './Select/RemoteSelect'
 import SimpleSelect from './Select/SimpleSelect'
 
@@ -38,23 +38,29 @@ export default {
   extends: base,
   props: {
     fieldLink: {
+      type: Object,
       default: function() {
         return {}
       }
     }, // 有可能是空
     fieldName: {
-      type: String
+      type: String,
+      default: ''
     },
     fieldMulti: {
+      type: Boolean,
       default: false
     }, // 是否多选
     fieldOption: {// 如果不远程连表的话,这个代表备选数据
-      //                type: Object,
+      type: [Object, Array],
       default: function() {
         return []
       }
     },
-    fieldKey: String
+    fieldKey: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {

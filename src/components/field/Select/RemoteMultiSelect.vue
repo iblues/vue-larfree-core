@@ -115,7 +115,7 @@ img {
 import base from '../base.js'
 
 export default {
-  name: 'LarFieldSelectMultiRemoteSelect',
+  name: 'LarFieldSelectRemoteMultiSelect',
   extends: base,
   props: {
     fieldLink: {

@@ -1,8 +1,8 @@
 
 <template>
-  <el-form ref="form" v-loading="loading" class="form" label-position="top" style="padding: 5px 10px;" label-width="150px">
+  <el-form v-if="schemas" ref="form" v-loading="loading" class="lar-form" label-position="top" style="padding: 5px 10px;" label-width="150px">
 
-    <template v-for="(schema,index) in Schemas.component_fields" v-if="Schemas">
+    <template v-for="(schema,index) in schemas.component_fields">
       <span :key="index" class="row-item-span">
         <!--{{schema | result('key',123)}}-->
         <template v-if="!schema.group_children">
@@ -11,7 +11,7 @@
               v-if="schema"
               v-model="formData[schema.key]"
               :data="formData"
-              :schema="Schemas['fields'][schema.key]"
+              :schema="schemas['fields'][schema.key]"
             />
             <span class="help-block m-b-none" v-html="schema.tip" />
           </el-form-item>
@@ -21,24 +21,24 @@
           <div class="row-title">{{ schema.name }}</div>
           <!--<hr style="margin-bottom: 10px;"/>-->
           <el-row :gutter="20" style="margin: 0">
-            <template v-for="(children_schema,index) in schema.group_children">
-              <el-col :key="index" :span="12">
+            <template v-for="(children_schema,index_group) in schema.group_children">
+              <el-col :key="index_group" :span="12">
                 <el-form-item style="top:-5px;position:relative">
-                  <strong
+                  <span
                     class="help-block m-b-none"
-                    v-html="Schemas['fields'][children_schema.key].name"
+                    v-html="schemas['fields'][children_schema.key].name"
                   />
                   <lar-form-ceil
                     v-if="children_schema"
                     v-model="formData[children_schema.key]"
                     style="float:none"
                     :data="formData"
-                    :schema="Schemas['fields'][children_schema.key]"
+                    :schema="schemas['fields'][children_schema.key]"
                     @updateData="updateData"
                   />
                   <span
                     class="help-block m-b-none"
-                    v-html="Schemas['fields'][children_schema.key].tip"
+                    v-html="schemas['fields'][children_schema.key].tip"
                   />
                 </el-form-item>
               </el-col>
@@ -62,10 +62,30 @@
 export default {
   name: 'LarForm',
   props: {
-    id: String,
+    id: {
+      type: [Number, String],
+      default: 0
+    },
     model: {
       type: String,
       required: true
+    },
+    action: {
+      type: String,
+      default: 'edit'
+    },
+    // 结构蓝图
+    schemas: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    data: {
+      type: Array,
+      default: function() {
+        return []
+      }
     }
   },
   data() {
@@ -75,7 +95,6 @@ export default {
       formData: {},
       tableData: [],
       api: '',
-      Schemas: [],
       mode: 'add',
       loading: true
     }
@@ -84,22 +103,21 @@ export default {
   watch: {
     id: function() {
       this.loading = true
-      this.getSchemas()
     },
     model: function() {
       // this.loading=true;
-      // this.getSchemas();
+      // this.getschemas();
     },
     readApi: function() {
       // this.getData();
     },
     mode: function() {
-      if (this.mode == 'add') { this.$emit('title', '添加') } else { this.$emit('title', '编辑') }
+      if (this.mode === 'add') { this.$emit('title', '添加') } else { this.$emit('title', '编辑') }
     }
   },
 
   created: function() {
-    this.getSchemas()
+    this.getschemas()
     this.debug = localStorage.getItem('debug')
     this.$emit('title', '添加')
     // this.dataChange();
@@ -109,43 +127,16 @@ export default {
     updateData(data) {
       this.formData = data
     },
-    getSchemas() {
-      if (this.id) {
-        this.mode = 'edit'
-      }
-
-      this.$http.get('/system/component/' + this.model + '/base.' + this.mode + '?mode=' + this.mode, { ttl: 3600 })
-        .then((response) => {
-          this.Schemas = response.data.data
-          if (this.mode == 'edit') {
-            // 编辑模式,需先读取数据
-            this.readApi = this.$larfree.replaceParm(response.data.data.config.readApi, this)
-            this.getData()
-          } else {
-            // this.getData();
-            this.readApi = ''
-            // 添加模式 直接加载完成
-            this.loading = false
-            this.$emit('loaded')
-          }
-          // 更新接口
-          this.api = this.$larfree.replaceParm(response.data.data.config.api, this)
-        })
-        .catch((error) => {
-          this.$message.error(error.response.data.msg)
-          //                    console.log(error);
-        })
-    },
 
     getData() {
       // 根据配置 初始化添加的数据结构
-      if (this.mode == 'add') {
-        const Schemas = {}
-        for (var key in this.Schemas['fields']) {
-          const name = this.Schemas['fields'][key]['key']
-          Schemas[name] = ''
+      if (this.mode === 'add') {
+        const schemas = {}
+        for (var key in this.schemas['fields']) {
+          const name = this.schemas['fields'][key]['key']
+          schemas[name] = ''
         }
-        this.formData = Schemas
+        this.formData = schemas
         this.loading = false
       } else {
         this.$http.get(this.readApi)
@@ -172,7 +163,11 @@ export default {
       this.loading = true
       this.$debug.log(this.formData, 'submit', this)
       let http
-      if (this.mode == 'add') { http = this.$http.post(this.api, this.formData) } else { http = this.$http.put(this.api, this.formData) }
+      if (this.mode === 'add') {
+        http = this.$http.post(this.api, this.formData)
+      } else {
+        http = this.$http.put(this.api, this.formData)
+      }
 
       http.then((response) => {
         this.loading = false
@@ -215,18 +210,14 @@ export default {
     }
 </style>
 <style>
-    .el-form--label-top .el-form-item__label {
+    .lar-form .el-form--label-top .el-form-item__label {
         padding: 0 !important;
         margin-bottom: 0px;
     }
-    .row-title{
-        /*margin: 10px 10px 0 10px;*/
+    .lar-form .row-title{
         font-size: 14px;
         padding: 10px;
-        background-color: #eee;
+        background-color: rgba(240, 240, 245, 0.5);
         margin-top: 15px;
     }
-    /*.el-form-item__content{*/
-    /*line-height: 20px !important;*/
-    /*}*/
 </style>
