@@ -1,6 +1,7 @@
 
 import $larfree from './plugin/larFree.js'
 import $debug from './plugin/debug.js'
+import $http from './plugin/http.js'
 import larTable from './components/module/Table'
 import larFrom from './components/module/Form'
 import larDetail from './components/module/Detail'
@@ -18,7 +19,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 }, {})
 
 const lafree = {
-  install(Vue) {
+  install(Vue, param) {
     // 将field中的组件自动注册
     for (const key in modules) {
       if (modules[key].name) {
@@ -26,7 +27,6 @@ const lafree = {
         Vue.component(modules[key].name, modules[key])
       }
     }
-
     Vue.component(larTable.name, larTable)
     Vue.component(larFrom.name, larFrom)
     Vue.component(larDetail.name, larDetail)
@@ -36,8 +36,7 @@ const lafree = {
 
     Vue.use($larfree)
     Vue.use($debug)
-
-    // Vue.use($http);
+    Vue.use($http, { host: param.host })
 
     // 类似通过 this.$xxx 方式调用插件的 其实只是挂载到原型上而已
     // Vue.prototype.$xxx  // 最终可以在任何地方通过 this.$xxx 调用

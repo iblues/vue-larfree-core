@@ -216,9 +216,9 @@ export default {
   mounted() {
     // this.myValue = [];
     // 查看模式 ,不需要初始化了.编辑模式才需要option
-    setTimeout(() => {
-      localStorage.removeItem(this.fieldLink.url)
-    }, 20000)
+    // setTimeout(() => {
+    //   localStorage.removeItem(this.fieldLink.url)
+    // }, 20000)
     if (this.action !== 'table') {
       if (localStorage.getItem(this.fieldLink.url)) {
         JSON.parse(localStorage.getItem(this.fieldLink.url)).map(item => {
@@ -315,8 +315,8 @@ export default {
         .get(api)
         .then(response => {
           // console.log("remoteMethod:", this.fieldLink, response.data.data);
-          localStorage.setItem(api, JSON.stringify(response.data.data))
-          response.data.data.map(item => {
+          // localStorage.setItem(api, JSON.stringify(response.data.data))
+          response.data.map(item => {
             this.setOption(
               item[this.fieldLink.select[0]],
               item,

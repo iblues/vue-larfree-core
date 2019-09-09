@@ -35,7 +35,7 @@
 </template>
 <script>
 import base from '../base.js'
-
+import axios from 'axios'
 export default {
   name: 'LarFieldSelectRemoteSelect',
   extends: base,
@@ -102,9 +102,6 @@ export default {
     this.$emit('searchModel', this.searchModel)
     this.setOption('all', '请输入搜索关键词')
     // 查看模式 ,不需要初始化了.编辑模式才需要option
-    setTimeout(() => {
-      localStorage.removeItem(this.fieldLink.url)
-    }, 20000)
     if (this.link && this.link.uninit) {
       if (this.action !== 'table') {
         if (localStorage.getItem(this.fieldLink.url)) {
@@ -186,12 +183,16 @@ export default {
       }
       this.$http.get(api)
         .then((response) => {
-          localStorage.setItem(api, JSON.stringify(response.data.data))
-          response.data.data.map((value) => {
+          // localStorage.setItem(api, JSON.stringify(response.data))
+          if (!response.data) {
+            this.loading = false
+            return false
+          }
+          response.data.map((value) => {
             this.setOption(value[this.fieldLink.select[0]], value, this.fieldLink.select)
           })
           this.loading = false
-          //                            this.debug.log(this.option);
+          // this.debug.log(this.option);
         })
         .catch((error) => {
           console.log(error, 'remoteMethod')

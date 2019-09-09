@@ -117,7 +117,6 @@ export default {
   },
 
   created: function() {
-    this.getschemas()
     this.debug = localStorage.getItem('debug')
     this.$emit('title', '添加')
     // this.dataChange();
@@ -169,7 +168,7 @@ export default {
         http = this.$http.put(this.api, this.formData)
       }
 
-      http.then((response) => {
+      this.$http.then((response) => {
         this.loading = false
         if (response.data.status === 1) {
           this.$message.success(response.data.msg)
