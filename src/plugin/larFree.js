@@ -1,15 +1,17 @@
 export default {
   install(Vue) {
     Vue.prototype.$larfree = {
-    /**
-     * 把{{id}}替换成真正的
-     * @param string
-     * @param data
-     * @returns string
-     */
+      /**
+       * 把{{id}}替换成真正的
+       * @param string
+       * @param data
+       * @returns string
+       */
       replaceParm: function(string, data) {
         // console.log(string);
-        if (!string) { return '' }
+        if (!string) {
+          return ''
+        }
         // string = string.replace(/({{[^,:}]+}})/g, function(word) {
         string = string.replace(/({{[^,:}]+}})/g, function(word) {
           word = word.substr(2)
@@ -32,7 +34,11 @@ export default {
         const query = Object.keys(params)
           .map((k) => {
             // if (params[k] && JSON.stringify(params[k]) !== '[]')
-            if ((params[k] || params[k] === 0) && JSON.stringify(params[k]) !== '[]') { return esc(k) + '=' + esc(params[k]) } else { return null }
+            if ((params[k] || params[k] === 0) && JSON.stringify(params[k]) !== '[]') {
+              return esc(k) + '=' + esc(params[k])
+            } else {
+              return null
+            }
           }).filter(function(val) {
             return !(!val || val === '')
           }).join('&')
@@ -69,13 +75,15 @@ export default {
                 query[key] = keyData.value
                 break
               case 'like':
-                query[key + '$'] = '%' + keyData.value + '%'
+                query[key] = '$%' + keyData.value + '%'
                 break
               case 'range':
-                if (keyData.value !== ',') { query[key + '$'] = `>${keyData.value[0]},<${keyData.value[1]}` }
+                if (keyData.value !== ',') {
+                  query[key] = `$>${keyData.value[0]},<${keyData.value[1]}`
+                }
                 break
               default:
-                query[key + '$'] = keyData.value
+                query[key] = keyData.value
                 break
             }
           }
@@ -91,7 +99,9 @@ export default {
        * @returns {*}
        */
       findArr: function(array, key, value) {
-        if (array.length < 1) { return false }
+        if (array.length < 1) {
+          return false
+        }
 
         for (var arr in array) {
           if (array[arr][key] === value) {
@@ -132,7 +142,9 @@ export default {
        * @returns {string}
        */
       getThumb: function(name, w, h, mode) {
-        if (!mode) { mode = 0 }
+        if (!mode) {
+          mode = 0
+        }
         // var host = 'http://ozpkvf5wf.bkt.clouddn.com';
         var host = 'http://api.dml-express.com'
         return `${host}/${name}?imageView2/${mode}/w/${w}/h/${h}`
