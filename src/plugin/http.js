@@ -45,6 +45,7 @@ const httpInit = function(param) {
       return res
     },
     error => {
+      console.log(error.response, '请求错误')
       if (error.response && error.response.status === 401) {
         // location.href = "/#/login/index";       //bigdata 路由未发生调整,只能暂时通过location处理
         // router.push({

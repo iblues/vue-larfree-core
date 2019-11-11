@@ -149,18 +149,17 @@ export default {
       if (!this.schemas || !this.schemas['adv_search']) { return [] }
       return this.schemas['adv_search']
     },
-    fullApi: function() {
-      console.log(this.pipeName, 'pipe')
-      if (!this.api) { return '' }
-      let query = this.apiQuery
-      query['pageSize'] = this.pageInfo.per_page * 1
-      query['page'] = this.pageInfo.current_page
-      // query = Object.assign(query, this.searchQuery)
-      if (this.params) {
-        query = Object.assign(query, this.params)
-      }
-      return this.$larfree.httpQuery(query, this.api)
-    }
+    // fullApi: function() {
+    //   if (!this.api) { return '' }
+    //   let query = this.apiQuery
+    //   query['pageSize'] = this.pageInfo.per_page * 1
+    //   query['page'] = this.pageInfo.current_page
+    //   // query = Object.assign(query, this.searchQuery)
+    //   if (this.params) {
+    //     query = Object.assign(query, this.params)
+    //   }
+    //   return this.$larfree.httpQuery(query, this.api)
+    // }
   },
 
   watch: {
@@ -169,19 +168,19 @@ export default {
     //   this.apiQuery = {}
     //   this.getSchemas()
     // },
-    dataRefreshEvents: function() {
-      this.loading = true
-      this.getData()
-    },
-    dataRefreshDialog: function() {
-      this.loading = true
-      this.getData()
-    },
+    // dataRefreshEvents: function() {
+    //   this.loading = true
+    //   this.$emit('change')
+    // },
+    // dataRefreshDialog: function() {
+    //   this.loading = true
+    //   this.$emit('change')
+    // },
     // 如果api变化就请求数据
-    fullApi: function() {
-      this.loading = true
-      this.getData()
-    }
+    // fullApi: function() {
+    //   this.loading = true
+    //   this.getData()
+    // }
   },
 
   mounted: function() {
@@ -263,12 +262,13 @@ export default {
         this.multipleSelection.forEach((item) => {
           const api = this.$larfree.replaceParm(delAction.api, item)
           this.$http.delete(api).then((response) => {
-            if (response.data.status === 1) {
-              this.getData()
+            if (response.status === 1) {
+              this.$emit('change')
             } else {
               this.$message.error(response.data.msg)
             }
-          }).catch(() => {
+          }).catch((e) => {
+            console.log(e.response, 'core请求错误')
             this.$message.error('删除失败:网络错误')
           })
         })
@@ -285,12 +285,14 @@ export default {
       }).then((data) => {
         console.log(data)
         this.$http.delete(action.real_api).then((response) => {
-          if (response.data.status === 1) {
-            this.getData()
+          console.log(response);
+          if (response.status === 1) {
+            this.$emit('change')
           } else {
             this.$message.error(response.data.msg)
           }
-        }).catch(() => {
+        }).catch((e) => {
+          console.log(e, 'core请求错误')
           this.$message.error('删除失败:网络错误')
         })
       }).catch(() => {
@@ -337,11 +339,11 @@ export default {
           this.$message.error('Table模块请求数据错误')
         })
     },
-    onRefreshData(evt) {
-      // this.getData();
-      // this.$emit('refresh', evt);
-      this.$store.commit('refreshDialog')
-    },
+    // onRefreshData(evt) {
+    //   // this.getData();
+    //   // this.$emit('refresh', evt);
+    //   this.$store.commit('refreshDialog')
+    // },
 
     /**
      * 快速修改
@@ -350,6 +352,7 @@ export default {
      * @param data
      */
     quickChange($event, key, data) {
+      // todo 需要提到上面那层去
       if (this.canQuickChange) {
         const newValue = $event
         // this.$debug.log(this.schemas);

@@ -26,15 +26,23 @@
 export default {
   name: 'LarTableAction',
   props: {
-    data: Object,
-    schemas: Object
+    data: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    schemas: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    }
   },
   data() {
     return {}
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
     // debugger;
   },

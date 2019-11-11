@@ -69,7 +69,7 @@ export default {
   props: {
     id: {
       type: [Number, String],
-      default: 0
+      default: null
     },
     model: {
       type: String,

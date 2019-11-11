@@ -102,16 +102,10 @@ export default {
     this.$emit('searchModel', this.searchModel)
     this.setOption('all', '请输入搜索关键词')
     // 查看模式 ,不需要初始化了.编辑模式才需要option
-    if (this.link && this.link.uninit) {
-      if (this.action !== 'table') {
-        if (localStorage.getItem(this.fieldLink.url)) {
-          JSON.parse(localStorage.getItem(this.fieldLink.url)).map((value) => {
-            this.setOption(value[this.fieldLink.select[0]], value, this.fieldLink.select)
-          })
-        } else {
-          this.remoteMethod()
-        }
-      }
+
+    // 默认进来的时候先初始化一个列表
+    if (this.fieldLink && !this.fieldLink.uninit) {
+      this.remoteMethod()
     }
   },
   methods: {
