@@ -19,7 +19,6 @@
       </viewer>
     </template>
     <template v-if="action == 'edit'">
-      {{ value }}
       <ul class="el-upload-list el-upload-list--picture-card">
         <draggable v-if="fieldMulti" v-model="list" @change="draggableChange">
           <transition-group>

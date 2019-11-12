@@ -7,7 +7,7 @@
     </template>
     <template v-if="action == 'edit'">
       <div v-for="(item,key) in show" :key="key">
-        <div>附件{{ key+1 }} : <a :href="item.url" target="download">{{ item.key }}  {{ item.url }} 点击下载</a></div>
+        <div>附件{{ key+1 }} : <a :href="item.url" target="download">{{ item.key }} 点击下载</a></div>
       </div>
       <el-upload
         class="upload-demo"
