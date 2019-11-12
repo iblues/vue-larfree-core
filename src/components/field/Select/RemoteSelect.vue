@@ -104,7 +104,7 @@ export default {
     // 查看模式 ,不需要初始化了.编辑模式才需要option
 
     // 默认进来的时候先初始化一个列表
-    if (this.fieldLink && !this.fieldLink.uninit) {
+    if (this.fieldLink && !this.fieldLink.uninit && this.action !== 'table') {
       this.remoteMethod()
     }
   },
@@ -175,6 +175,11 @@ export default {
         api = this.$larfree.httpQuery(query, api)
         this.clearOption()
       }
+      if (!api) {
+        console.log(api, '请求为空')
+        return ''
+      }
+
       this.$http.get(api)
         .then((response) => {
           // localStorage.setItem(api, JSON.stringify(response.data))

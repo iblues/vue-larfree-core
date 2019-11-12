@@ -37,6 +37,7 @@ const lafree = {
     Vue.use($larfree)
     Vue.use($debug)
     Vue.use($http, { host: param.host })
+    // this.$store.state.larfree.upload.imageHost = param.host
 
     // 类似通过 this.$xxx 方式调用插件的 其实只是挂载到原型上而已
     // Vue.prototype.$xxx  // 最终可以在任何地方通过 this.$xxx 调用
@@ -44,7 +45,7 @@ const lafree = {
 
     // 解决vue示例不一致问题
     Window.larfree = { 'vue': Vue }
-    console.log(Vue.component(`LarFieldInput`), 'ssss')
+    // console.log(Vue.component(`LarFieldInput`), 'ssss')
   }
 }
 export default lafree // 导出..

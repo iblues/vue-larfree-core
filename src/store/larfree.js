@@ -5,10 +5,6 @@ const state = {
   // debug: true,
   schemas: {},
   // history: {},
-  upload: {
-    imageHost: process.env.VUE_APP_API_HOST + '/upload/images',
-    fileHost: process.env.VUE_APP_API_HOST + '/upload/files'
-  },
   pipe: {}, // 用来互通筛选条件
   num: null, // 用来互通筛选条件
   dataRefreshEvents: '{}' // 监听刷新事件

@@ -53,7 +53,7 @@ export default {
     },
     handleSuccess(res, file) {
       console.log(res)
-      if (res.status == 1) {
+      if (res.status === 1) {
         this.$emit('uploaded', res.data)
       } else {
         res.data.fileName = file.name
@@ -62,7 +62,7 @@ export default {
       //                this.imageUrl = URL.createObjectURL(file.raw);
     },
     handleError(err, file, fileList) {
-      this.$message.error('上传错误 ' + res.data.msg)
+      this.$message.error('上传错误 ' + err.data.msg)
     },
     handleChange() {
     }

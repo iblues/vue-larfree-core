@@ -19,28 +19,56 @@
       </viewer>
     </template>
     <template v-if="action == 'edit'">
+      {{ value }}
       <ul class="el-upload-list el-upload-list--picture-card">
-        <li
-          v-for="(img, key) in list"
-          :key="img"
-          :style="{ background: 'url(' + img['url'] + ')' }"
-          class="el-upload-list__item"
-        >
-          <img alt="" class="el-upload-list__item-thumbnail">
-          <a class="el-upload-list__item-name">
-            <i class="el-icon-document" />
-          </a>
-          <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(img)"
-            ><i class="el-icon-zoom-in" /></span>
-            <span
-              class="el-upload-list__item-delete"
-              @click="handelRemove(img, key)"
-            ><i class="el-icon-delete" /></span>
-          </span>
-        </li>
+        <draggable v-if="fieldMulti" v-model="list" @change="draggableChange">
+          <transition-group>
+            <li
+              v-for="(img, key) in list"
+              :key="key"
+              :style="{ background: 'url(' + img['url'] + ')' }"
+              class="el-upload-list__item"
+            >
+              <img alt="" class="el-upload-list__item-thumbnail">
+              <a class="el-upload-list__item-name">
+                <i class="el-icon-document" />
+              </a>
+              <span class="el-upload-list__item-actions">
+                <span
+                  class="el-upload-list__item-preview"
+                  @click="handlePictureCardPreview(img)"
+                ><i class="el-icon-zoom-in" /></span>
+                <span
+                  class="el-upload-list__item-delete"
+                  @click="handleRemove(img, key)"
+                ><i class="el-icon-delete" /></span>
+              </span>
+            </li>
+          </transition-group>
+        </draggable>
+        <template v-else>
+          <li
+            v-for="(img, key) in list"
+            :key="key"
+            :style="{ background: 'url(' + img['url'] + ')' }"
+            class="el-upload-list__item"
+          >
+            <img alt="" class="el-upload-list__item-thumbnail">
+            <a class="el-upload-list__item-name">
+              <i class="el-icon-document" />
+            </a>
+            <span class="el-upload-list__item-actions">
+              <span
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(img)"
+              ><i class="el-icon-zoom-in" /></span>
+              <span
+                class="el-upload-list__item-delete"
+                @click="handleRemove(img, key)"
+              ><i class="el-icon-delete" /></span>
+            </span>
+          </li>
+        </template>
       </ul>
 
       <el-upload
@@ -70,9 +98,13 @@
 </template>
 <script>
 import base from './base.js'
+import draggable from 'vuedraggable'
 
 export default {
   name: 'LarFieldImage',
+  components: {
+    draggable
+  },
   extends: base,
   props: {
     fieldMulti: {
@@ -86,57 +118,86 @@ export default {
   },
   data() {
     return {
-      tmpThumb: [],
+      tmpThumb: [], // 把当前上传的缩略图存在临时变量中.
       UploadingList: [], // 上传中的
-      dialogImageUrl: '',
+      dialogImageUrl: '', // 预览的图片
       dialogVisible: false,
       appendToBody: true,
       index: null,
       show: true,
-      host: this.$store.state.upload.imageHost
+      list: [], // 显示用的数组
+      host: process.env.VUE_APP_BASE_API + '/upload/images'
     }
   },
   computed: {
     multiple: function() {
       return !!this.fieldMulti
     },
-    list: function() {
-      if (!this.value) return []
 
-      const list = []
+    linkKey: function() {
+      return this.fieldKey + '_link'
+    },
+    images: function() {
       if (this.fieldMulti) {
+        return this.data[this.linkKey]['large']
+      } else {
+        return [this.data[this.linkKey]['large']]
+      }
+    }
+  },
+  watch: {
+    value: function() {
+      console.log('变化')
+      this.getList()
+    }
+  },
+  methods: {
+    draggableChange() {
+      const input = []
+      this.list.forEach((item, key) => {
+        input.push(item.name)
+        // large.push(item.url)
+      })
+      this.$emit('input', input)
+    },
+    validate(file) {
+      // 验证
+    },
+    /**
+     * 返回战神的列表
+     * @returns {Array}
+     */
+    getList() {
+      if (!this.value) return []
+      let list = []
+      if (this.fieldMulti) {
+        // 多个的 得循环查找. 先找tmpThumb有没有
         this.value.forEach((item, key) => {
-          var thumb = this.tmpThumb[item]
+          let thumb = this.tmpThumb[item]
           if (!thumb) {
-            thumb = this.data[this.bigImgKey][key]
+            this.data[this.linkKey]['large'].forEach((url) => {
+              // large 只要包含了item的数据 说明是同一个
+              if (url.indexOf(item) > 0) {
+                thumb = url
+                return false
+              }
+            })
           }
           list.push({ name: item, url: thumb })
         })
       } else {
-        var thumb = this.tmpThumb[this.value]
+        // 单个的比较简单
+        let thumb = this.tmpThumb[this.value]// 临时存储的.
         if (!thumb) {
-          thumb = this.data[this.bigImgKey]
+          thumb = this.data[this.linkKey]['large']
         }
-        list.push({ name: this.value, url: thumb })
+        list = [{ name: this.value, url: thumb }]
       }
-      return list
+      this.list = list
+      // return list
     },
-    bigImgKey: function() {
-      return this.fieldKey + '_big'
-    },
-    images: function() {
-      if (this.fieldMulti) {
-        return this.data[this.bigImgKey] || this.data[this.fieldKey]
-      } else {
-        return [this.data[this.bigImgKey] || this.data[this.fieldKey]]
-      }
-    }
-  },
-  methods: {
-    validate(file) {
-      // 验证
-    },
-    handelSuccess(file, fileList) {
+    handelSuccess(file, r, fileList) {
+      console.log(fileList, 'fileList')
       let value = this.value
       if (!value) value = []
       if (file.status) {
@@ -163,7 +224,7 @@ export default {
       this.dialogImageUrl = img.url
       this.dialogVisible = true
     },
-    handelRemove(img, key) {
+    handleRemove(img, key) {
       if (this.fieldMulti) {
         const value = this.value
         value.splice(key, 1)
@@ -176,32 +237,32 @@ export default {
 }
 </script>
 <style scoped>
-.el-upload-list--picture-card .el-upload-list__item {
-  margin: 0 8px 0px 0;
-}
+    .el-upload-list--picture-card .el-upload-list__item {
+        margin: 0 8px 0px 0;
+    }
 
-.el-upload__tip {
-  line-height: 100%;
-}
+    .el-upload__tip {
+        line-height: 100%;
+    }
 
-input[type="file"] {
-  display: none;
-}
+    input[type="file"] {
+        display: none;
+    }
 
-.el-upload-list__item {
-  background-repeat: no-repeat !important;
-  background-size: 100% !important;
-  background-clip: content-box !important;
-  background-position: center !important;
-}
+    .el-upload-list__item {
+        background-repeat: no-repeat !important;
+        background-size: 100% !important;
+        background-clip: content-box !important;
+        background-position: center !important;
+    }
 
-.el-upload-list--picture-card .el-upload-list__item {
-  width: 180px;
-  height: 180px;
-}
+    .el-upload-list--picture-card .el-upload-list__item {
+        width: 180px;
+        height: 180px;
+    }
 </style>
 <style>
-.lar-field-image .el-upload-dragger {
-  width: 180px !important;
-}
+    .lar-field-image .el-upload-dragger {
+        width: 180px !important;
+    }
 </style>
