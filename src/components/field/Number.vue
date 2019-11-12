@@ -9,8 +9,8 @@
       />
     </template>
     <template v-if="action == 'search' ">
-
-      <span class="lar-number_range el-input__inner">
+      <!--id就不要用范围了  以后可以考虑做成切换的-->
+      <span v-if="fieldKey!=='id'" class="lar-number_range el-input__inner">
         <el-input
           v-model="min"
           :placeholder="fieldName + '最小值'"
@@ -21,7 +21,12 @@
           :placeholder="fieldName + '最大值'"
         />
       </span>
-
+      <span v-else>
+        <el-input
+          v-model="min"
+          :placeholder="fieldName"
+        />
+      </span>
     </template>
     <template v-if="action == 'table'">
       {{ value }}
