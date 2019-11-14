@@ -86,6 +86,7 @@ export default {
     }
     if (this.remote && this.multiple) {
       this.currentView = 'lar-field-select-remote-multi-select'// 连表多选
+      this.searchModel = 'link'
     }
   },
   methods: {

@@ -1,41 +1,40 @@
-
 <style>
-.inline-multi .el-select__tags {
-  display: inline-block;
-  white-space: nowrap;
-  overflow-x: hidden;
-}
+    .inline-multi .el-select__tags {
+        display: inline-block;
+        white-space: nowrap;
+        overflow-x: hidden;
+    }
 </style>
 <style scoped>
-.button {
-  border: 1px solid #dcdfe6;
-  padding: 3px;
-  padding-left: 4px;
-  border-radius: 5px;
-  background: white;
-  margin-bottom: 2px;
-  text-align: center;
-}
+    .button {
+        border: 1px solid #dcdfe6;
+        padding: 3px;
+        padding-left: 4px;
+        border-radius: 5px;
+        background: white;
+        margin-bottom: 2px;
+        text-align: center;
+    }
 
-.button a {
-  display: block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  color: #606266;
-}
+    .button a {
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        color: #606266;
+    }
 
-.button a:hover {
-  color: #409eff;
-}
+    .button a:hover {
+        color: #409eff;
+    }
 
-img {
-  width: 50px;
-}
+    img {
+        width: 50px;
+    }
 
-.el-select {
-  width: 220px;
-}
+    .el-select {
+        width: 220px;
+    }
 </style>
 <template>
   <span>
@@ -44,16 +43,21 @@ img {
       <!--{{button}}-->
       <!--</el-button>-->
       <ul style="list-style: none;padding:0">
-        <li v-for="button in show" :key="button" class="button">
+        <li
+          v-for="(button,key) in show"
+          :key="key"
+          style="display: inline-block"
+        >
+
+          <template v-if="key!=0"> , </template>
           <el-tooltip
             class="item"
             effect="dark"
             :content="button.show"
             placement="top"
+            type="text"
           >
-            <router-link :to="getShowUrl(fieldLink.show, button.value)">
-              {{ button.show }}
-            </router-link>
+            <span @click="goToEdit(fieldLink.show,button.value)">  {{ button.show }}</span>
           </el-tooltip>
         </li>
       </ul>
@@ -76,8 +80,8 @@ img {
           :value="item.value"
         />
         <!-- <el-option-group v-if="fieldLink.model"
-                                 label="请输入关键词获取更多">
-                </el-option-group> -->
+                                     label="请输入关键词获取更多">
+                    </el-option-group> -->
       </el-select>
     </template>
     <template v-if="action == 'edit'">
@@ -149,6 +153,7 @@ export default {
       option: [], // 远程调用存储数据的地方,
       optionHash: {},
       multiple: true,
+      searchModel: 'link',
       remote: true
     }
   },
@@ -179,7 +184,7 @@ export default {
           // 有值的话
           if (
             typeof this.value === 'object' &&
-            typeof this.value[0] === 'object'
+              typeof this.value[0] === 'object'
           ) {
             // let option = [];
             // console.log(
@@ -232,8 +237,12 @@ export default {
         this.remoteMethod()
       }
     }
+    this.$emit('searchModel', this.searchModel)// 重新声明下
   },
   methods: {
+    goToEdit(url, data) {
+      this.$router.push(this.$larfree.replaceParm(url, data))
+    },
     // 初始化下拉框
     initOption() {
       // this.setOption(0, '全部');
@@ -242,10 +251,6 @@ export default {
       if (this.action !== 'edit') {
         return false
       }
-    },
-
-    getShowUrl(url, data) {
-      return this.$larfree.replaceParm(url, data)
     },
 
     // 添加新的option

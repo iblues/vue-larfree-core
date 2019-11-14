@@ -36,6 +36,7 @@
 <script>
 import base from '../base.js'
 import axios from 'axios'
+
 export default {
   name: 'LarFieldSelectRemoteSelect',
   extends: base,
@@ -78,10 +79,16 @@ export default {
     show() {
       // 链表,单选
       let optionName = this.fieldLink.as
-      if (!optionName) { optionName = this.fieldKey + '_link' }
+      if (!optionName) {
+        optionName = this.fieldKey + '_link'
+      }
       if (this.data[optionName]) {
         const value = this.data[optionName]
-        if (this.fieldLink.select) { return value[this.fieldLink.select[1]] } else { return value }
+        if (this.fieldLink.select) {
+          return value[this.fieldLink.select[1]]
+        } else {
+          return value
+        }
       } else {
         return ''
       }
@@ -116,7 +123,9 @@ export default {
       }
       // 读取link中的数据先填充并选中
       let optionName = this.fieldLink.as
-      if (!optionName) { optionName = this.fieldKey + '_link' }
+      if (!optionName) {
+        optionName = this.fieldKey + '_link'
+      }
 
       // console.log(optionName);
       // this.$debug.log($)
@@ -129,7 +138,9 @@ export default {
     // 添加设置option结构
     setOption(key, value, schema) {
       // 如果是数字 就改成数字
-      if (!isNaN(key)) { key = key * 1 }
+      if (!isNaN(key)) {
+        key = key * 1
+      }
 
       // 先检查是否重复了
       let pass = true
@@ -196,7 +207,7 @@ export default {
         .catch((error) => {
           console.log(error, 'remoteMethod')
         })
-      //                }
+        //                }
     }
 
   }

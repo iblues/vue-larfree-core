@@ -74,6 +74,9 @@ export default {
               case 'equal':
                 query[key] = keyData.value
                 break
+              case 'link':
+                query[key] = '$' + keyData.value
+                break
               case 'like':
                 query[key] = '$%' + keyData.value + '%'
                 break
