@@ -12,13 +12,15 @@
       <el-upload
         class="upload-demo"
         :action="host"
+        drag
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :multiple="multiple"
         :on-success="handelSuccess"
       >
-        <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">上传不超过8mg的文件</div>
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div slot="tip" class="el-upload__tip">{{tip}}</div>
       </el-upload>
     </template>
   </span>
@@ -33,6 +35,10 @@ export default {
     fieldMulti: {
       type: [Number, String, Boolean],
       default: false
+    }, // 是否多选
+    tip: {
+      type: [String],
+      default: '请勿上传超过8mb的文件'
     }, // 是否多选
     value: {
       type: [String, Array],
@@ -63,6 +69,9 @@ export default {
         this.value.forEach((item, key) => {
           // tmpUrl有就用. 没有就从link找
           if (!this.tmpUrl[item]) {
+            if (!this.data) {
+              return
+            }
             this.data[this.linkKey].forEach((url) => {
               // large 只要包含了item的数据 说明是同一个
               if (url.indexOf(item) > -1) {
@@ -78,6 +87,9 @@ export default {
         if (this.tmpUrl[this.value]) {
           list.push({ key: this.value, url: this.tmpUrl[this.value] })
         } else {
+          if (!this.data) {
+            return
+          }
           list.push({ key: this.value, url: this.data[this.linkKey] })
         }
       }
@@ -100,18 +112,17 @@ export default {
         if (this.fieldMulti) {
           value.push(file.data.name)
           this.$emit('input', value)
+          this.$emit('uploaded', this.tmpUrl)
         } else {
           value = file.data.name
           this.$emit('input', value)
+          this.$emit('uploaded', file.data.url)
         }
       }
     },
     // err, file, fileList 3个参数
     handleError() {
       this.$message.error('上传错误')
-    },
-    handleChange(file, fileList) {
-      //                this.emit()
     },
     handleRemove(file, key) {
       if (this.fieldMulti) {

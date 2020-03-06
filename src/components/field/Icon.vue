@@ -1,14 +1,13 @@
 <template>
   <span>
     <template v-if="action == 'table' ">
-      <div v-html="show" />
+      <svg-icon :icon-class="show" />
     </template>
     <template v-if="action == 'edit' || action == 'search'">
       <el-select
         style="width:100%"
         :value="value"
         filterable
-        clearable
         class="SimpleSelect"
         reserve-keyword
         :loading="loading"
@@ -20,16 +19,19 @@
           :key="item.value"
           :label="item.label"
           :value="item.value"
-        />
+        >
+          <svg-icon :icon-class="item.value" /> <span>{{ item.value }}</span>
+        </el-option>
+
       </el-select>
     </template>
   </span>
 </template>
 <script>
-import base from '../base.js'
+import base from './base.js'
 
 export default {
-  name: 'LarFieldSelectSimpleSelect',
+  name: 'LarFieldIcon',
   extends: base,
   props: {
     fieldOption: {// 如果不远程连表的话,这个代表备选数据
@@ -67,6 +69,7 @@ export default {
   },
   mounted() {
     this.$emit('searchModel', this.searchModel)
+    this.setOption('all', '全部')
     // 查看模式 ,不需要初始化了.编辑模式才需要option
     if (this.action !== 'table') {
       this.initOption()
@@ -99,6 +102,16 @@ export default {
         }
       })
       if (!pass) return
+      // 如果schema存在,那就需要读取多个字段的内容
+      if (schema) {
+        let tmpValue = ''
+        schema.forEach((v, k) => {
+          if (k > 0 && v && value[v]) {
+            tmpValue += value[v] + ' '
+          }
+        })
+        value = tmpValue
+      }
       this.option.push({ value: key, label: value })
     }
 

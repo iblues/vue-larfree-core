@@ -19,6 +19,7 @@
       </viewer>
     </template>
     <template v-if="action == 'edit'">
+
       <ul class="el-upload-list el-upload-list--picture-card">
         <draggable v-if="fieldMulti" v-model="list" @change="draggableChange">
           <transition-group>
@@ -70,20 +71,35 @@
         </template>
       </ul>
 
-      <el-upload
-        style="display: inline;"
-        class="upload-demo"
-        drag
-        :show-file-list="show"
-        :on-success="handelSuccess"
-        :action="host"
-        :multiple="multiple"
-      >
-        <i class="el-icon-upload" />
-        <div class="el-upload__text" style="line-height: 20px;">
-          将图片拖到此处<br>或<em>点击上传</em>
-        </div>
-      </el-upload>
+      <!--裁剪模式, 不支持多图-->
+      <template v-if="fieldComponentParam.type === 'cropper'">
+        <span v-if="fieldMulti">多图模式不支持裁剪</span>
+        <semple-cropper
+                :width="fieldComponentParam.width"
+                :height="fieldComponentParam.height"
+                :fixed="fieldComponentParam.fixed"
+                @success="handelSuccess"
+        />
+      </template>
+
+      <!--普通模式-->
+      <template v-else>
+        <el-upload
+          style="display: inline;"
+          class="upload-demo"
+          drag
+          :show-file-list="show"
+          :on-success="handelSuccess"
+          :action="host"
+          :multiple="multiple"
+        >
+          <i class="el-icon-upload" />
+          <div class="el-upload__text" style="line-height: 20px;">
+            将图片拖到此处<br>或<em>点击上传</em>
+          </div>
+        </el-upload>
+
+      </template>
 
       <el-dialog
         :append-to-body="appendToBody"
@@ -98,10 +114,12 @@
 <script>
 import base from './base.js'
 import draggable from 'vuedraggable'
+import SempleCropper from './Cropper/SempleCropper'
 
 export default {
   name: 'LarFieldImage',
   components: {
+    SempleCropper,
     draggable
   },
   extends: base,
@@ -110,6 +128,12 @@ export default {
       type: [Number, String, Boolean],
       default: false
     }, // 是否多选
+    fieldComponentParam: {
+      type: [Object],
+      default: function() {
+        return {}
+      }
+    },
     value: {
       type: [String, Array],
       default: ''
@@ -163,7 +187,7 @@ export default {
       // 验证
     },
     /**
-     * 返回战神的列表
+     * 返回临时缩略图的列表
      * @returns {Array}
      */
     getList() {

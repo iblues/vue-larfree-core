@@ -41,7 +41,7 @@ const httpInit = function(param) {
   )
   Axios.interceptors.response.use(
     res => {
-      res = res.data
+      if (res.data) { res = res.data }
       return res
     },
     error => {

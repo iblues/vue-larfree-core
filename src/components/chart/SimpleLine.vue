@@ -1,13 +1,27 @@
 <template>
   <span>
-    <chart :options="polar" :theme="theme" auto-resize />
+    <!--拖拽ui用的. 需要继承-->
+    <template v-if="_action==='setting'">
+      <drag-ui-setting-from
+        setting="_setting"
+        :value="_uiParam"
+        schemas="{'fields':{'model':{'name':'模块名','type':'text','tip':'例如:common.user'}}}"
+        v-on="$listeners"
+      />
+    </template>
+
+    <template v-else>
+      <span>
+        <chart :options="polar" :theme="theme" auto-resize />
+      </span>
+    </template>
   </span>
 </template>
 
 <style scoped>
     .echarts {
         width: auto !important;
-        height: 250px !important;
+        height: 200px !important;
         min-width: 340px;
     }
 </style>
@@ -27,6 +41,7 @@ import 'echarts/lib/component/polar'
 import 'echarts/lib/component/tooltip'
 
 import theme from './walden.json'
+import setting from '@/larfree/components/dragUi/setting'
 // import Vue from 'vue'
 ECharts.registerTheme('walden', theme)
 // 注册组件后即可使用
@@ -34,13 +49,18 @@ ECharts.registerTheme('walden', theme)
 // Vue.component('chart', ECharts)
 
 export default {
-  name: 'LarChartLine',
+  name: 'LarChartSimpleLine',
   components: {
     'chart': ECharts
   },
+  extends: setting,
   props: {
     model: {
       type: String
+    },
+    module: {
+      type: String,
+      default: 'chart.line'
     }
   },
   data: function() {
@@ -60,14 +80,14 @@ export default {
         legend: {
           //                        data:['测试1','测试2']
         },
-        dataZoom: [
-          {
-            id: 'dataZoomX',
-            type: 'slider',
-            xAxisIndex: [0],
-            filterMode: 'filter'
-          }
-        ],
+        // dataZoom: [
+        //   {
+        //     id: 'dataZoomX',
+        //     type: 'slider',
+        //     xAxisIndex: [0],
+        //     filterMode: 'filter'
+        //   }
+        // ],
         toolbox: {
           show: true,
           feature: {
@@ -110,19 +130,17 @@ export default {
         return ''
       }
       this.loading = true
-      this.$http.get('/system/component/' + this.model + '/chart.line', { ttl: false })
+      this.$http.get('/system/component/' + this.model + '/' + this.module, { ttl: false })
         .then((response) => {
           this.loading = false
           //                            this.Schemas = response.data.data;
-
-          console.log('chart', response.data)
           this.initChart(response.data)
           console.log('chart', this.Schemas)
         })
         .catch((error) => {
           this.loading = false
-          this.$message.error('Chart模块请求错误')
-          console.log(error.response.data, 'Chart模块请求错误')
+          this.$message.error('请求模块错误')
+          console.log(error.response.data)
           // console.log(error);
         })
     },
@@ -152,7 +170,6 @@ export default {
     },
 
     initChart(data) {
-      console.log(data, 'initChart')
       this.polar.title.text = data.title
       this.polar.title.subtext = data.sub_title
       // 初始化基本的option值

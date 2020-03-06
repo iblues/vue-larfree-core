@@ -10,6 +10,7 @@
       :field-option="fieldOption"
       :field-name="fieldName"
       :field-key="fieldKey"
+      :field-component-param="fieldComponentParam"
       :action="action"
       v-on="$listeners"
     />
@@ -43,10 +44,6 @@ export default {
         return {}
       }
     }, // 有可能是空
-    fieldName: {
-      type: String,
-      default: ''
-    },
     fieldMulti: {
       type: Boolean,
       default: false
@@ -57,10 +54,6 @@ export default {
         return []
       }
     },
-    fieldKey: {
-      type: String,
-      default: ''
-    }
   },
   data() {
     return {

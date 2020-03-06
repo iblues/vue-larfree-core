@@ -23,6 +23,15 @@ export default {
       type: String,
       default: ''
     },
+    /**
+     * 组件参数
+     */
+    fieldComponentParam: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     value: {
       default: ''
     } // 传入的value值.

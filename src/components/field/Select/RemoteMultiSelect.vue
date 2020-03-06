@@ -1,47 +1,6 @@
-<style>
-    .inline-multi .el-select__tags {
-        display: inline-block;
-        white-space: nowrap;
-        overflow-x: hidden;
-    }
-</style>
-<style scoped>
-    .button {
-        border: 1px solid #dcdfe6;
-        padding: 3px;
-        padding-left: 4px;
-        border-radius: 5px;
-        background: white;
-        margin-bottom: 2px;
-        text-align: center;
-    }
-
-    .button a {
-        display: block;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        color: #606266;
-    }
-
-    .button a:hover {
-        color: #409eff;
-    }
-
-    img {
-        width: 50px;
-    }
-
-    .el-select {
-        width: 220px;
-    }
-</style>
 <template>
   <span>
     <template v-if="action == 'table'">
-      <!--<el-button v-for="button in show">-->
-      <!--{{button}}-->
-      <!--</el-button>-->
       <ul style="list-style: none;padding:0">
         <li
           v-for="(button,key) in show"
@@ -85,6 +44,7 @@
       </el-select>
     </template>
     <template v-if="action == 'edit'">
+
       <el-select
         ref="selectComponent"
         style="width:100%"
@@ -106,7 +66,7 @@
           :value="item.value"
         />
 
-        <el-option-group v-if="fieldLink.model" label="请输入关键词获取更多" />
+        <el-option-group v-if="fieldComponentParam.api" label="请输入关键词获取更多" />
       </el-select>
     </template>
   </span>
@@ -130,21 +90,12 @@ export default {
         return {}
       }
     },
-    fieldName: {
-      // 连表的相关结构
-      type: String,
-      default: ''
-    },
     fieldOption: {
       // 如果不远程连表的话,这个代表备选数据
       type: Array,
       default: function() {
         return []
       }
-    },
-    fieldKey: {
-      type: String,
-      default: ''
     }
   },
   data() {
@@ -162,12 +113,8 @@ export default {
       // 链表多选
       const name = []
       this.value.forEach(value => {
-        let tmpValue = ''
-        this.fieldLink.select.forEach((v, k) => {
-          if (k > 0 && v && value[v]) {
-            tmpValue += value[v] + ' '
-          }
-        })
+        // 支持larfree拼接语法
+        const tmpValue = this.$larfree.replaceParm(this.fieldComponentParam.name || '{缺失name}', value)
         name.push({ show: tmpValue, value: value })
       })
       return name
@@ -195,14 +142,15 @@ export default {
             // );
 
             this.value.forEach((item, index) => {
-              if (item[this.fieldLink.select[0]]) {
+              const key = this.fieldComponentParam.key || 'id'
+              if (item[key]) {
                 // 作为备选option
                 this.setOption(
-                  item[this.fieldLink.select[0]],
+                  item[key],
                   item,
-                  this.fieldLink.select
+                  this.fieldComponentParam.name
                 )
-                this.value.splice(index, 1, item[this.fieldLink.select[0]]) // 矫正value值
+                this.value.splice(index, 1, item[key]) // 矫正value值
                 // 选中的
                 // selected.push(value[this.fieldLink.select[0]]);
               }
@@ -225,17 +173,8 @@ export default {
     //   localStorage.removeItem(this.fieldLink.url)
     // }, 20000)
     if (this.action !== 'table') {
-      if (localStorage.getItem(this.fieldLink.url)) {
-        JSON.parse(localStorage.getItem(this.fieldLink.url)).map(item => {
-          this.setOption(
-            item[this.fieldLink.select[0]],
-            item,
-            this.fieldLink.select
-          )
-        })
-      } else {
-        this.remoteMethod()
-      }
+      // 缓存
+      this.remoteMethod()
     }
     this.$emit('searchModel', this.searchModel)// 重新声明下
   },
@@ -258,21 +197,10 @@ export default {
       // 如果是数字 就改成数字
       if (!isNaN(key)) key = key * 1
 
-      // 如果schema存在,那就可能字段备选.
-      let label = ''
-      if (schema) {
-        schema.forEach((v, k) => {
-          if (k > 0 && v && data[v]) {
-            label += data[v] + ' '
-          }
-        })
-      }
-      // console.log(
-      //   `setOption: value: ${key}, label:${label}, schema:${schema}`,
-      //   data
-      // );
+      // 支持larfree拼接语法
+      const value = this.$larfree.replaceParm(schema || '{缺失name}', data)
 
-      const item = { value: key, label: label }
+      const item = { value: key, label: value }
       // 检查是否重复了
       if (this.optionHash[key]) {
         return item
@@ -294,27 +222,22 @@ export default {
     remoteMethod(query) {
       //                if (query !== '') {
       this.loading = true
-      let api = this.fieldLink.url
+      let api = this.fieldComponentParam.api
       if (!api) {
         console.log('remoteMethod:路径错误')
       }
 
-      const preHash = this.optionHash
+      const key = this.fieldComponentParam.key || 'id'
+
       if (query) {
         // 有搜索条件的时候,api拼接
-        const field = this.fieldLink.select.slice(0)
-        const name = field.splice(1).join('|') + '$'
+        const field = this.fieldComponentParam.search_key || this.$larfree.getParamKey(this.fieldComponentParam.name).splice(0).join('|')
         const keyword = query
         query = {}
-        query[name] = '%' + keyword + '%'
+        query[field] = '$%' + keyword + '%'
         api = this.$larfree.httpQuery(query, api)
         this.clearOption()
       }
-
-      // 保留上一次选中项,作为待选项
-      this.$refs.selectComponent.selected.forEach(item => {
-        this.setOption(item.value, preHash[item.value].orgData, this.fieldLink.select)
-      })
 
       this.$http
         .get(api)
@@ -323,9 +246,9 @@ export default {
           // localStorage.setItem(api, JSON.stringify(response.data.data))
           response.data.map(item => {
             this.setOption(
-              item[this.fieldLink.select[0]],
+              item[key],
               item,
-              this.fieldLink.select
+              this.fieldComponentParam.name
             )
           })
           this.loading = false
@@ -338,3 +261,41 @@ export default {
   }
 }
 </script>
+<style>
+  .inline-multi .el-select__tags {
+    display: inline-block;
+    white-space: nowrap;
+    overflow-x: hidden;
+  }
+</style>
+<style scoped>
+  .button {
+    border: 1px solid #dcdfe6;
+    padding: 3px;
+    padding-left: 4px;
+    border-radius: 5px;
+    background: white;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+
+  .button a {
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #606266;
+  }
+
+  .button a:hover {
+    color: #409eff;
+  }
+
+  img {
+    width: 50px;
+  }
+
+  .el-select {
+    width: 220px;
+  }
+</style>

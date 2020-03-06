@@ -69,6 +69,11 @@ export default {
     rangeValue: function() {
       this.$emit('input', this.rangeValue)
     }
+  },
+  created: function() {
+    if (this.fieldKey === 'id') {
+      this.searchModel = 'equal'
+    }
   }
 
 }

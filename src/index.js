@@ -7,6 +7,8 @@ import larFrom from './components/module/Form'
 import larDetail from './components/module/Detail'
 import larSearchBox from './components/module/SearchBox'
 import larFromCeil from './components/form/Ceil'
+import LarChartLine from './components/chart/Line'
+import LarChartSimpleLine from './components/chart/SimpleLine'
 // import larDialog from './components/module/Dialog'
 
 // 批量读取field组件
@@ -23,10 +25,15 @@ const lafree = {
     // 将field中的组件自动注册
     for (const key in modules) {
       if (modules[key].name) {
-        console.log(modules[key].name, '已注册')
+        // console.log(modules[key].name, '已注册')
         Vue.component(modules[key].name, modules[key])
       }
     }
+
+    // 统计
+    Vue.component(LarChartLine.name, LarChartLine)
+    Vue.component(LarChartSimpleLine.name, LarChartSimpleLine)
+
     Vue.component(larTable.name, larTable)
     Vue.component(larFrom.name, larFrom)
     Vue.component(larDetail.name, larDetail)
@@ -37,6 +44,7 @@ const lafree = {
     Vue.use($larfree)
     Vue.use($debug)
     Vue.use($http, { host: param.host })
+
     // this.$store.state.larfree.upload.imageHost = param.host
 
     // 类似通过 this.$xxx 方式调用插件的 其实只是挂载到原型上而已

@@ -135,7 +135,7 @@ export default {
     // 情况搜索结果
     clearSearch() {
       for (const key in this.searchData) {
-        Vue.set(this.searchData[key], 'value', null)
+        Vue.set(this.searchData[key], 'value', '')
       }
       this.$emit('clear', this.searchData)
     }

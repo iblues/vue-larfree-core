@@ -5,9 +5,10 @@ export default {
        * 把{{id}}替换成真正的
        * @param string
        * @param data
+       * @param string warpper=null  ' " 变量替换的时候包裹
        * @returns string
        */
-      replaceParm: function(string, data) {
+      replaceParm: function(string, data, warpper) {
         // console.log(string);
         if (!string) {
           return ''
@@ -16,10 +17,52 @@ export default {
         string = string.replace(/({{[^,:}]+}})/g, function(word) {
           word = word.substr(2)
           word = word.substr(0, word.length - 2)
-          return data[word]
+          if (warpper) {
+            return warpper + data[word] + warpper
+          } else {
+            return data[word]
+          }
         })
         // console.log(string);
         return string
+      },
+
+      /**
+       * 把多为数字变成一维
+       * @param fields
+       * @param key
+       */
+      getFlattenColumns: function(fields, key) {
+        const newArray = {}
+        console.log(fields)
+        for (const k in fields) {
+          const val = fields[k]
+          if (val[key]) {
+            this.getFlattenColumns(val[key], key)
+            delete val[key]
+          }
+          newArray[k] = val
+        }
+        console.log(newArray)
+        return newArray
+      },
+
+      /**
+       * 提取{{}}中的变量名,方便使用
+       */
+      getParamKey: function(string) {
+        const reg = /{{([^,:}]+)}}/g
+        const data = string.match(reg).map(function(word) {
+          word = word.substr(2)
+          word = word.substr(0, word.length - 2)
+          return word
+        })
+        return data
+      },
+
+      evil: function(fn) {
+        const Fn = Function // 一个变量指向Function，防止有些前端编译工具报错
+        return new Fn('return ' + fn)()
       },
 
       /**
@@ -63,11 +106,7 @@ export default {
         for (const key in data) {
           const keyData = data[key]
           // console.info('adfasdf',keyData);
-          if (keyData.searchModel === 'equal') {
-            query[key] = null
-          } else {
-            query[key + '$'] = null
-          }
+          query[key] = null// 先重置为空
           if (keyData.value || keyData.value === 0) {
             // if (keyData.value) {
             switch (keyData.searchModel) {

@@ -105,7 +105,6 @@ export default {
         current_page: 1
       },
       canQuickChange: false, // 用于控制当前是否可以开始快速修改. 如果还没有加载完成就可以 会有bug
-      apiQuery: {}, // 查询的参数
       loading: true,
       searchQueryCache: {
         data: {},
@@ -148,7 +147,7 @@ export default {
     advSchemas: function() {
       if (!this.schemas || !this.schemas['adv_search']) { return [] }
       return this.schemas['adv_search']
-    },
+    }
     // fullApi: function() {
     //   if (!this.api) { return '' }
     //   let query = this.apiQuery
@@ -241,7 +240,7 @@ export default {
     handleSort(column) {
       let sort = 'desc'
       if (column.order === 'ascending') { sort = 'asc' }
-      Vue.set(this.apiQuery, '@sort', column.column.property + '.' + sort)
+      this.$emit('changeSort', column.column.property + '.' + sort)
     },
     // 批量删除
     delMultiRows() {
@@ -285,7 +284,7 @@ export default {
       }).then((data) => {
         console.log(data)
         this.$http.delete(action.real_api).then((response) => {
-          console.log(response);
+          console.log(response)
           if (response.status === 1) {
             this.$emit('change')
           } else {

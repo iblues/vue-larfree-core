@@ -8,6 +8,7 @@
         style="width:100%"
         :value="value"
         filterable
+        clearable
         class="RemoteSelect"
         :multiple="multiple"
         reserve-keyword
@@ -25,7 +26,7 @@
         />
 
         <el-option-group
-          v-if="fieldLink.model"
+          v-if="fieldComponentParam.api"
           label="请输入关键词获取更多"
         />
       </el-select>
@@ -84,11 +85,7 @@ export default {
       }
       if (this.data[optionName]) {
         const value = this.data[optionName]
-        if (this.fieldLink.select) {
-          return value[this.fieldLink.select[1]]
-        } else {
-          return value
-        }
+        return this.$larfree.replaceParm(this.fieldComponentParam.name || '{缺失name}', value)
       } else {
         return ''
       }
@@ -107,7 +104,6 @@ export default {
   },
   mounted() {
     this.$emit('searchModel', this.searchModel)
-    this.setOption('all', '请输入搜索关键词')
     // 查看模式 ,不需要初始化了.编辑模式才需要option
 
     // 默认进来的时候先初始化一个列表
@@ -131,7 +127,7 @@ export default {
       // this.$debug.log($)
       if (this.data[optionName]) {
         const value = this.data[optionName]
-        this.setOption(value[this.fieldLink.select[0]], value, this.fieldLink.select)
+        this.setOption(value[this.fieldComponentParam.key], value, this.fieldComponentParam.name)
       }
     },
 
@@ -152,33 +148,24 @@ export default {
       if (!pass) return// 重复了
 
       // 如果schema存在,那就需要读取多个字段的内容
-      if (schema) {
-        let tmpValue = ''
-        schema.forEach((v, k) => {
-          if (k > 0 && v && value[v]) {
-            tmpValue += value[v] + ' '
-          }
-        })
-        value = tmpValue
-      }
+      value = this.$larfree.replaceParm(schema || '{缺失name}', value)
       this.option.push({ value: key, label: value })
     },
     clearOption() {
       this.option = []
-      this.setOption('all', '全部')
     },
 
     // 远程读取数据,供给下拉
     remoteMethod(query) {
       //                if (query !== '') {
       this.loading = true
-      let api = this.fieldLink.url
+      let api = this.fieldComponentParam.api
       if (!api) {
         console.log('remoteMethod:路径错误')
       }
       if (query) {
         // 有搜索条件的时候,api拼接
-        const field = this.fieldLink.select.slice(0)
+        const field = this.fieldComponentParam.key
         const name = field.splice(1).join('|') + '$'
         const keyword = query
         query = {}
@@ -198,8 +185,13 @@ export default {
             this.loading = false
             return false
           }
+          const key = this.fieldComponentParam.key || 'id'
           response.data.map((value) => {
-            this.setOption(value[this.fieldLink.select[0]], value, this.fieldLink.select)
+            this.setOption(
+              value[key],
+              value,
+              this.fieldComponentParam.name
+            )
           })
           this.loading = false
           // this.debug.log(this.option);
