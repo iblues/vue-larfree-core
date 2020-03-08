@@ -34,7 +34,6 @@ export default {
        */
       getFlattenColumns: function(fields, key) {
         const newArray = {}
-        console.log(fields)
         for (const k in fields) {
           const val = fields[k]
           if (val[key]) {
@@ -43,7 +42,6 @@ export default {
           }
           newArray[k] = val
         }
-        console.log(newArray)
         return newArray
       },
 
