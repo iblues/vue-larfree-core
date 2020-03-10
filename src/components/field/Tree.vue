@@ -5,7 +5,6 @@
 <template>
   <span>
     <template v-if="action == 'edit' || action == 'search' ">
-      {{ value }}
       <!--<el-input :value="value" :placeholder="fieldName" v-on="$listeners" />-->
       <el-input
         v-model="filterText"
@@ -85,7 +84,8 @@ export default {
 
   created: function() {
     this.defaultProps = {
-      children: 'children'
+      children: 'children',
+      label: this.fieldComponentParam.value
     }
     this.$http.get(this.fieldComponentParam.api).then((res) => {
       this.tree = res.data
@@ -94,7 +94,7 @@ export default {
   methods: {
     filterNode(value, data) {
       if (!value) return true
-      return data.name.indexOf(value) !== -1
+      return data[this.fieldComponentParam.value].indexOf(value) !== -1
     },
     change: function(e) {
       // console.log(e)
@@ -103,7 +103,7 @@ export default {
       // this.$emit('update', this.$refs.tree.getCheckedKeys())
     },
     html: function(data) {
-      return '<b>' + data['name'] + '</b>'
+      return '<b>' + data[this.fieldComponentParam.value] + '</b>'
     },
 
     //  全选/反选

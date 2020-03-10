@@ -26,7 +26,7 @@
     <!--数据的列-->
     <!--sortable-->
     <el-table-column
-      v-for="schema in schemas.component_fields"
+      v-for="schema in schemas.fields"
       :key="schema.key"
       sortable
       :prop="schema.key"
@@ -260,7 +260,7 @@ export default {
         delAction = delAction[0]
         this.multipleSelection.forEach((item) => {
           const api = this.$larfree.replaceParm(delAction.api, item)
-          this.$http.delete(api).then((response) => {
+          this.$api(api).then((response) => {
             if (response.status === 1) {
               this.$emit('change')
             } else {
@@ -283,7 +283,7 @@ export default {
         type: 'warning'
       }).then((data) => {
         console.log(data)
-        this.$http.delete(action.real_api).then((response) => {
+        this.$api(action.real_api).then((response) => {
           console.log(response)
           if (response.status === 1) {
             this.$emit('change')
@@ -302,42 +302,42 @@ export default {
     add() {
       this.$router.push({ path: this.schemas.config.button.add.url })
     },
-    /**
-             * @author: xufei
-             * @description: 导出数据
-             */
-    // 获取数据
-    export() {
-      this.loading = true
-      this.canQuickChange = false
-      if (this.zeroing) {
-        this.pageInfo.current_page = 1
-      }
-      console.log(this.fullApi, 'api')
-      if (!this.fullApi) {
-        return false
-      }
-
-      this.$http.get(`${this.fullApi}&export=1`)
-        .then((res) => {
-          this.loading = false
-          if (res.data && res.data.data && res.data.data[0]) {
-            let a = document.getElementById('openUrl')
-            if (!a) {
-              a = document.createElement('a')
-              a.setAttribute('id', 'openUrl')
-              a.setAttribute('target', '_blank')
-              document.body.appendChild(a)
-            }
-            a.setAttribute('href', res.data.data[0])
-            a.click()
-          }
-        })
-        .catch((error) => {
-          console.log('table.vue', error)
-          this.$message.error('Table模块请求数据错误')
-        })
-    },
+    // /**
+    //          * @author: xufei
+    //          * @description: 导出数据
+    //          */
+    // // 获取数据
+    // export() {
+    //   this.loading = true
+    //   this.canQuickChange = false
+    //   if (this.zeroing) {
+    //     this.pageInfo.current_page = 1
+    //   }
+    //   console.log(this.fullApi, 'api')
+    //   if (!this.fullApi) {
+    //     return false
+    //   }
+    //
+    //   this.$http.get(`${this.fullApi}&export=1`)
+    //     .then((res) => {
+    //       this.loading = false
+    //       if (res.data && res.data.data && res.data.data[0]) {
+    //         let a = document.getElementById('openUrl')
+    //         if (!a) {
+    //           a = document.createElement('a')
+    //           a.setAttribute('id', 'openUrl')
+    //           a.setAttribute('target', '_blank')
+    //           document.body.appendChild(a)
+    //         }
+    //         a.setAttribute('href', res.data.data[0])
+    //         a.click()
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log('table.vue', error)
+    //       this.$message.error('Table模块请求数据错误')
+    //     })
+    // },
     // onRefreshData(evt) {
     //   // this.getData();
     //   // this.$emit('refresh', evt);
@@ -358,7 +358,7 @@ export default {
         const url = this.$larfree.replaceParm(this.schemas.config.quick_change_api, data)
         const putData = {}
         putData[key] = newValue
-        this.$http.put(url, putData)
+        this.$api(url, putData)
           .then((response) => {
             if (response.data.status === 1) {
               this.$message.success(response.data.msg)

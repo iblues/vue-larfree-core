@@ -41,7 +41,6 @@ import 'echarts/lib/component/polar'
 import 'echarts/lib/component/tooltip'
 
 import theme from './walden.json'
-import setting from '@/larfree/components/dragUi/setting'
 // import Vue from 'vue'
 ECharts.registerTheme('walden', theme)
 // 注册组件后即可使用
@@ -53,7 +52,6 @@ export default {
   components: {
     'chart': ECharts
   },
-  extends: setting,
   props: {
     model: {
       type: String

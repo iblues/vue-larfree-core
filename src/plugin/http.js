@@ -41,7 +41,9 @@ const httpInit = function(param) {
   )
   Axios.interceptors.response.use(
     res => {
-      if (res.data) { res = res.data }
+      if (res.data) {
+        res = res.data
+      }
       return res
     },
     error => {
@@ -76,6 +78,25 @@ const httpInit = function(param) {
 export default {
   install: function(Vue, param) {
     const Axios = httpInit(param)
+
+    Vue.prototype.$api = (Url, Params) => {
+      let method = Url.substring(0, Url.indexOf('://'))
+      method = method.toLocaleLowerCase()
+      Url = Url.substring(Url.indexOf('://') + 3)
+      switch (method) {
+        case 'get':
+          return Axios.get(Url, Params)
+        case 'delete':
+          return Axios.delete(Url, Params)
+        case 'put':
+          return Axios.put(Url, Params)
+        case 'patch':
+          return Axios.patch(Url, Params)
+        case 'post':
+          return Axios.post(Url, Params)
+      }
+    }
+
     Object.defineProperty(Vue.prototype, '$http', {
       value: Axios
     })
