@@ -165,11 +165,10 @@ export default {
       }
       if (query) {
         // 有搜索条件的时候,api拼接
-        const field = this.fieldComponentParam.key
-        const name = field.splice(1).join('|') + '$'
+        const name = this.fieldComponentParam.search_key || this.$larfree.getParamKey(this.fieldComponentParam.name).splice(0).join('|')
         const keyword = query
         query = {}
-        query[name] = '%' + keyword + '%'
+        query[name] = '$%' + keyword + '%'
         api = this.$larfree.httpQuery(query, api)
         this.clearOption()
       }
@@ -207,11 +206,11 @@ export default {
 }
 </script>
 <style scoped>
-    img {
-        width: 50px;
-    }
+  img {
+    width: 50px;
+  }
 
-    .el-select {
-        width: 220px;
-    }
+  .el-select {
+    width: 220px;
+  }
 </style>

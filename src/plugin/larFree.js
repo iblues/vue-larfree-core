@@ -17,6 +17,7 @@ export default {
         string = string.replace(/({{[^,:}]+}})/g, function(word) {
           word = word.substr(2)
           word = word.substr(0, word.length - 2)
+          if (typeof data[word] === 'undefined') { data[word] = '' }
           if (warpper) {
             return warpper + data[word] + warpper
           } else {

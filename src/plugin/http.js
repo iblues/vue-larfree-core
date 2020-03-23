@@ -80,6 +80,7 @@ export default {
     const Axios = httpInit(param)
 
     Vue.prototype.$api = (Url, Params) => {
+      const originUrl = Url
       let method = Url.substring(0, Url.indexOf('://'))
       method = method.toLocaleLowerCase()
       Url = Url.substring(Url.indexOf('://') + 3)
@@ -94,6 +95,8 @@ export default {
           return Axios.patch(Url, Params)
         case 'post':
           return Axios.post(Url, Params)
+        default:
+          return Axios.get(originUrl, Params)
       }
     }
 

@@ -6,6 +6,7 @@
 *
 */
 <template>
+
   <el-form
     v-if="schemas"
     ref="form"
@@ -14,6 +15,7 @@
     style="padding: 5px 10px;"
     label-width="150px"
   >
+
     <template v-for="(schema,key) in schemas.fields">
       <transition :key="key" name="fade">
 
@@ -126,6 +128,9 @@ export default {
     }
   },
   watch: {
+    schemas: function() {
+      this.fattenFields
+    },
     readApi: function() {
       // this.getData();
     },
