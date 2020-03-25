@@ -37,6 +37,12 @@ export default {
       } else {
         return this.$attrs['error']
       }
+    },
+    componentValue: function() {
+      if (typeof this.data[this.schema['key']] === 'undefined') {
+        return this.$larfree.arrayGet(this.data, this.schema['key'])
+      }
+      return this.value
     }
   },
   created() {
@@ -60,11 +66,12 @@ export default {
       if (!Vue.component('LarField' + this.$larfree.ucfrist(type))) {
         type = 'input'
       }
+
       html = `<lar-field-${type}
                     ${bind}
                     :data="data"
                     :action="action"
-                    :value="value"
+                    :value="componentValue"
                     v-on = "$listeners">
                 </lar-field-${type}>`
 

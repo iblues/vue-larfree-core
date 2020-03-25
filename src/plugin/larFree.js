@@ -2,6 +2,22 @@ export default {
   install(Vue) {
     Vue.prototype.$larfree = {
       /**
+       * arrayGet(data,'name.1');
+       * @param data
+       * @param key
+       */
+      arrayGet: function(data, key) {
+        if (key.indexOf('.') > 0) {
+          const keys = key.split('.', 2)
+          if (typeof data[keys[0]] === 'undefined') {
+            return null
+          }
+          return this.arrayGet(data[keys[0]], keys[1])
+        } else {
+          return (typeof data[key] !== 'undefined') ? data[key] : null
+        }
+      },
+      /**
        * 把{{id}}替换成真正的
        * @param string
        * @param data

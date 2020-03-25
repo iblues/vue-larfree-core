@@ -29,6 +29,12 @@ export default {
       }
     }
   },
+
+  computed: {
+    componentValue: function() {
+      return this.$larfree.arrayGet(this.data, this.schema['key'])
+    }
+  },
   watch: {
     data: function() {
       this.Ready()
@@ -57,6 +63,7 @@ export default {
       if (!Vue.component('LarField' + this.$larfree.ucfrist(type))) {
         type = 'input'
       }
+
       html = `<span>
                 <lar-field-${type}
                     :data="data"
@@ -64,7 +71,7 @@ export default {
                     :action="action"
 
                     v-on = "$listeners"
-                    v-model="data[schema['key']]"
+                    :value="componentValue"
                 >
                 </lar-field-${type}>
               </span>
