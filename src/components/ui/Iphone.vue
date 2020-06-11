@@ -1,26 +1,27 @@
 <template>
-    <div class="iphone">
-        <div class="iphone-top">
-            <span class="camera"></span>
-            <span class="sensor"></span>
-            <span class="speaker"></span>
-        </div>
-        <div class="top-bar"></div>
-        <div class="iphone-screen">
-            <slot></slot>
-        </div>
-        <div class="bottom-bar"></div>
-        <div class="iphone-bottom">
-            <span></span>
-        </div>
+  <div class="iphone">
+    <div class="iphone-top">
+      <span class="camera" />
+      <span class="sensor" />
+      <span class="speaker" />
     </div>
+    <div class="top-bar" />
+    <div class="iphone-screen">
+      <slot />
+    </div>
+    <div class="bottom-bar" />
+    <div class="iphone-bottom">
+      <span />
+    </div>
+  </div>
 </template>
 <script>
-    export default {
-        data() {
-            return {}
-        }
-    }
+export default {
+  name: 'LarUiPhone',
+  data() {
+    return {}
+  }
+}
 </script>
 <style scoped>
     *, *:after, *:before {
@@ -169,6 +170,5 @@
         left: 4px;
         top: 4px;
     }
-
 
 </style>

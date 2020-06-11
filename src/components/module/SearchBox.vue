@@ -1,10 +1,10 @@
 <template>
   <div class="search_box">
     <div class="input-group" style="width:100%">
-      <form>
-        <div v-if="have" class="rows">
-          <el-form ref="form">
-            <el-row class="schemas-search" :gutter="20">
+      <form native-type="submit">
+        <div class="rows">
+          <el-form ref="form" @keyup.enter.native="search()">
+            <el-row v-show="schemas" class="schemas-search" :gutter="20">
               <el-col v-for="schema in schemas" :key="schema.key" :lg="4" :md="6" :sm="8" :xs="12" class="form-group form-input">
                 <!--<label style="padding-left: 5px">{{schema.name}}</label>-->
                 <lar-form-ceil
@@ -42,8 +42,9 @@
             <el-col class="form-group form-input">
               <div>
                 <slot name="search" />
-                <el-button type="primary" class="reset-btn" icon="el-icon-search" size="medium" @click="search()">搜索</el-button>
-                <el-button type="default" class="reset-btn" size="medium" @click="clearSearch()">重置</el-button>
+                <el-button v-show="have" type="primary" class="reset-btn" icon="el-icon-search" size="medium" @click="search()">搜索</el-button>
+                <el-button v-show="have" type="default" class="reset-btn" size="medium" @click="clearSearch()">重置</el-button>
+                <span v-show="have" class="divide">|</span>
                 <el-button
                   v-show="advSchemas.length!==0"
                   type="default"

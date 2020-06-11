@@ -62,7 +62,6 @@
 
 </template>
 <script>
-import Vue from 'vue'
 import larTableCeil from '../table/Ceil'
 import larTableAction from '../table/Action'
 
@@ -240,7 +239,7 @@ export default {
     handleSort(column) {
       let sort = 'desc'
       if (column.order === 'ascending') { sort = 'asc' }
-      this.$emit('changeSort', column.column.property + '.' + sort)
+      this.$emit('change-sort', column.column.property + '.' + sort)
     },
     // 批量删除
     delMultiRows() {
@@ -260,21 +259,13 @@ export default {
         delAction = delAction[0]
         this.multipleSelection.forEach((item) => {
           const api = this.$larfree.replaceParm(delAction.api, item)
-          this.$api(api).then((response) => {
-            if (response.status === 1) {
-              this.$emit('change')
-            } else {
-              this.$message.error(response.data.msg)
-            }
-          }).catch((e) => {
-            console.log(e.response, 'core请求错误')
-            this.$message.error('删除失败:网络错误')
-          })
+          this.emitDoApi(api, 'del')
         })
       }).catch(() => {
 
       })
     },
+
     // 直接删除
     delRows(index, data, action) {
       this.$confirm('是否删除' + data.id + '?', '提示', {
@@ -282,67 +273,20 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then((data) => {
-        console.log(data)
-        this.$api(action.real_api).then((response) => {
-          console.log(response)
-          if (response.status === 1) {
-            this.$emit('change')
-          } else {
-            this.$message.error(response.data.msg)
-          }
-        }).catch((e) => {
-          console.log(e, 'core请求错误')
-          this.$message.error('删除失败:网络错误')
-        })
+        this.emitDoApi(action.real_api, 'del')
       }).catch(() => {
         // 取消
       })
+    },
+
+    // 统一提交事件
+    emitDoApi(api, action) {
+      this.$emit('do-api', { 'api': api, 'action': action })
     },
     // 添加
     add() {
       this.$router.push({ path: this.schemas.config.button.add.url })
     },
-    // /**
-    //          * @author: xufei
-    //          * @description: 导出数据
-    //          */
-    // // 获取数据
-    // export() {
-    //   this.loading = true
-    //   this.canQuickChange = false
-    //   if (this.zeroing) {
-    //     this.pageInfo.current_page = 1
-    //   }
-    //   console.log(this.fullApi, 'api')
-    //   if (!this.fullApi) {
-    //     return false
-    //   }
-    //
-    //   this.$http.get(`${this.fullApi}&export=1`)
-    //     .then((res) => {
-    //       this.loading = false
-    //       if (res.data && res.data.data && res.data.data[0]) {
-    //         let a = document.getElementById('openUrl')
-    //         if (!a) {
-    //           a = document.createElement('a')
-    //           a.setAttribute('id', 'openUrl')
-    //           a.setAttribute('target', '_blank')
-    //           document.body.appendChild(a)
-    //         }
-    //         a.setAttribute('href', res.data.data[0])
-    //         a.click()
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log('table.vue', error)
-    //       this.$message.error('Table模块请求数据错误')
-    //     })
-    // },
-    // onRefreshData(evt) {
-    //   // this.getData();
-    //   // this.$emit('refresh', evt);
-    //   this.$store.commit('refreshDialog')
-    // },
 
     /**
      * 快速修改
@@ -351,27 +295,28 @@ export default {
      * @param data
      */
     quickChange($event, key, data) {
-      // todo 需要提到上面那层去
-      if (this.canQuickChange) {
-        const newValue = $event
-        // this.$debug.log(this.schemas);
-        const url = this.$larfree.replaceParm(this.schemas.config.quick_change_api, data)
-        const putData = {}
-        putData[key] = newValue
-        this.$api(url, putData)
-          .then((response) => {
-            if (response.data.status === 1) {
-              this.$message.success(response.data.msg)
-            } else {
-              this.$message.error(response.data.msg)
-            }
-          })
-          .catch((error) => {
-            console.log('table.quickChange', error)
-            this.$message.error('请求数据错误')
-          })
-      }
+      this.$emit('quick-change', { 'key': key, 'data': data, 'value': $event })
+      // if (this.canQuickChange) {
+      //   const newValue = $event
+      //   // this.$debug.log(this.schemas);
+      //   const url = this.$larfree.replaceParm(this.schemas.config.quick_change_api, data)
+      //   const putData = {}
+      //   putData[key] = newValue
+      //   this.$api(url, putData)
+      //     .then((response) => {
+      //       if (response.data.status === 1) {
+      //         this.$message.success(response.data.msg)
+      //       } else {
+      //         this.$message.error(response.data.msg)
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       console.log('table.quickChange', error)
+      //       this.$message.error('请求数据错误')
+      //     })
+      // }
     }
+
   }
 }
 </script>

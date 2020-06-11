@@ -70,7 +70,7 @@ export default {
       // this.$emit('checkboxChange', this.myValue);
     },
     quickChange: function() {
-      this.$emit('quick-change', !this.value)
+      this.$emit('quick-change', this.myValue)
     }
   }
 }

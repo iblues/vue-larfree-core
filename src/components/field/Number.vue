@@ -23,7 +23,7 @@
       </span>
       <span v-else>
         <el-input
-          v-model="min"
+          v-model="myValue"
           :placeholder="fieldName"
         />
       </span>
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     rangeValue: function() {
-      if (this.action === 'search') {
+      if (this.action === 'search' && this.fieldKey !== 'id') {
         return [this.min, this.max]
       } else {
         return this.myValue

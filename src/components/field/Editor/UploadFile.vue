@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      host: this.$store.state.upload.fileHost
+      host: process.env.VUE_APP_BASE_API + '/upload/files'
     }
   },
   methods: {

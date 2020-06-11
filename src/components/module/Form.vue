@@ -15,7 +15,6 @@
     style="padding: 5px 10px;"
     label-width="150px"
   >
-    {{formData}}
 
     <template v-for="(schema,key) in schemas.fields">
       <transition :key="key" name="fade">
