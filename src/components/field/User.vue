@@ -15,6 +15,7 @@
       :field-option="fieldOption"
       :field-name="fieldName"
       :field-key="fieldKey"
+      :field-component-param="fieldComponentParam"
       :action="action"
       v-on="$listeners"
     />

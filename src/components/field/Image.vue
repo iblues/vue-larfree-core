@@ -75,10 +75,10 @@
       <template v-if="fieldComponentParam.type === 'cropper'">
         <span v-if="fieldMulti">多图模式不支持裁剪</span>
         <semple-cropper
-                :width="fieldComponentParam.width"
-                :height="fieldComponentParam.height"
-                :fixed="fieldComponentParam.fixed"
-                @success="handelSuccess"
+          :width="fieldComponentParam.width"
+          :height="fieldComponentParam.height"
+          :fixed="fieldComponentParam.fixed"
+          @success="handelSuccess"
         />
       </template>
 
@@ -88,6 +88,7 @@
           style="display: inline;"
           class="upload-demo"
           drag
+          :headers="headers"
           :show-file-list="show"
           :on-success="handelSuccess"
           :action="host"
@@ -153,10 +154,17 @@ export default {
     }
   },
   computed: {
+    headers: function() {
+      if (localStorage.getItem('token')) {
+        return { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        // config.headers.city = localStorage.getItem('cityId');
+      } else {
+        return {}
+      }
+    },
     multiple: function() {
       return !!this.fieldMulti
     },
-
     linkKey: function() {
       return this.fieldKey + '_link'
     },

@@ -1,9 +1,12 @@
 <template>
   <span>
+    {{ dialogs }}
     <el-dialog
       v-for="(item, index) in dialogs"
       :key="index"
       top="5vh"
+
+      style="min-width: 300px"
       :custom-class="isPhone ? 'margno ' + item.dWidth : item.dWidth"
       :title="item.title"
       :visible.sync="!!item && item.visible"
@@ -23,7 +26,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+// 没用
 export default {
   name: 'LarDialog',
   data() {
@@ -47,7 +50,7 @@ export default {
     },
     dialogConfirmClose: function(done) {
       if (this.dialogConfirmCancel) {
-        this.$confirm('是否放弃编辑内容？')
+        this.$confirm('是否放弃编辑？')
           .then(() => {
             this.$router.go(-1)
             done()

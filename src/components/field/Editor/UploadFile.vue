@@ -17,6 +17,7 @@
           :on-success="handleSuccess"
           :on-error="handleError"
           :on-change="handleChange"
+          :headers="headers"
           :action="host"
           class="upload-demo"
           drag
@@ -45,6 +46,14 @@ export default {
     }
   },
   methods: {
+    headers: function() {
+      if (localStorage.getItem('token')) {
+        return { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        // config.headers.city = localStorage.getItem('cityId');
+      } else {
+        return {}
+      }
+    },
     validate(file) {
       // 验证
     },

@@ -13,6 +13,7 @@
         class="upload-demo"
         :action="host"
         drag
+        :headers="headers"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
         :multiple="multiple"
@@ -20,7 +21,7 @@
       >
         <i class="el-icon-upload" />
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div slot="tip" class="el-upload__tip">{{tip}}</div>
+        <div slot="tip" class="el-upload__tip">{{ tip }}</div>
       </el-upload>
     </template>
   </span>
@@ -57,6 +58,14 @@ export default {
     }
   },
   computed: {
+    headers: function() {
+      if (localStorage.getItem('token')) {
+        return { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+        // config.headers.city = localStorage.getItem('cityId');
+      } else {
+        return {}
+      }
+    },
     multiple: function() {
       return !!this.fieldMulti
     },
