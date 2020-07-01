@@ -1,3 +1,6 @@
+/**
+  * 如果发现默认没有选择,多半是类型不符. 比如字符串和数字
+  **/
 <template>
   <span>
     <template v-if="action == 'table' ">
@@ -152,7 +155,14 @@ export default {
       this.option.push({ value: key, label: value })
     },
     clearOption() {
-      this.option = []
+      // console.log("clearOption");
+      const selectedOption = []
+      this.option.forEach((o) => {
+        if (this.value === o.value) {
+          selectedOption.push(o)
+        }
+      })
+      this.option = selectedOption
     },
 
     // 远程读取数据,供给下拉

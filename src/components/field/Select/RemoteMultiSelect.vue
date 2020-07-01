@@ -105,6 +105,7 @@ export default {
       optionHash: {},
       multiple: true,
       searchModel: 'link',
+      oldOption: [], // 存储之前选择的.否则可能不显示
       remote: true
     }
   },
@@ -212,10 +213,23 @@ export default {
         }
       }
     },
+    /**
+     * 情况其他的备选项, 但是已选择的不能清理
+     */
     clearOption() {
       // console.log("clearOption");
-      this.option = []
-      this.optionHash = {}
+      const selectedOption = []
+      const optionHash = {}
+      this.value.forEach((v) => {
+        this.option.forEach((o) => {
+          if (v === o.value) {
+            selectedOption.push(o)
+            optionHash[o.value] = o
+          }
+        })
+      })
+      this.option = selectedOption
+      this.optionHash = optionHash
     },
 
     // 远程读取数据,供给下拉

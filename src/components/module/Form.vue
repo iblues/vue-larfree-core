@@ -23,12 +23,12 @@
         <span v-show="condition(schema.condition)" :key="key" class="row-item-span">
           <!--{{schema | result('key',123)}}-->
           <template v-if="!schema.group_children">
-            <el-form-item :key="key" :label="schema.name" style="margin-left: 10px;padding:0">
+            <el-form-item :key="key" :label="schema.key" style="margin-left: 10px;padding:0">
               <lar-form-ceil
                 v-if="schema"
                 v-model="formData[key]"
                 :data="formData"
-                :schema="fattenFields[key]"
+                :schema="schema"
               />
               <span class="help-block m-b-none" v-html="schema.tip" />
             </el-form-item>
@@ -39,29 +39,31 @@
             <!--<hr style="margin-bottom: 10px;"/>-->
             <el-row :gutter="20" style="margin: 0">
               <template v-for="(children_schema,children_key) in schema.group_children">
+
                 <transition :key="children_key" name="fade">
                   <!--condition 满足条件才显示. 默认都显示-->
                   <el-col v-show="condition(children_schema.condition)" :key="children_key" :span="12">
                     <el-form-item style="top:-5px;position:relative">
                       <span
                         class="help-block m-b-none"
-                        v-html="fattenFields[children_key].name"
+                        v-html="children_schema.name || ''"
                       />
                       <lar-form-ceil
                         v-if="children_schema"
                         v-model="formData[children_key]"
                         style="float:none"
                         :data="formData"
-                        :schema="fattenFields[children_key]"
+                        :schema="children_schema"
                         @updateData="updateData"
                       />
                       <span
                         class="help-block m-b-none"
-                        v-html="fattenFields[children_key].tip"
+                        v-html="children_schema.tip"
                       />
                     </el-form-item>
                   </el-col>
                 </transition>
+
               </template>
             </el-row>
           </template>
@@ -117,20 +119,7 @@ export default {
       mode: 'add'
     }
   },
-
-  computed: {
-    fattenFields: function() {
-      const schemas = this.$larfree.getFlattenColumns(this.schemas['fields'], 'group_children')
-      for (const key in schemas) {
-        schemas[key]['key'] = key
-      }
-      return schemas
-    }
-  },
   watch: {
-    schemas: function() {
-      this.fattenFields
-    },
     readApi: function() {
       // this.getData();
     },
